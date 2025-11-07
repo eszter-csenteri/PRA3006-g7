@@ -35,7 +35,16 @@ hmm :</h1>
 
 <h2> Library tests</h2>
 <script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+  // Check if D3 loaded correctly
+  console.log("D3 version:", d3.version);
 
+  // Example: create a simple D3 element
+  d3.select("body")
+    .append("p")
+    .text("D3 is working!")
+    .style("color", "green");
+</script>
 
 </body>
 </html>
