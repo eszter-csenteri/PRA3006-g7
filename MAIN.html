@@ -4,31 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radiopharmaceuticals 🧠</title>
-    <link rel="stylesheet" href="style.css">  <!-- this links to CSS -->
+    <link rel="stylesheet" href="/HTML/style.css">
 
-    <!-- Main styles -->
+    <!-- D3 library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <style>
-        /* Global colours */
         body {
-            background-color: rgb(12, 31, 49);
+            background-color: rgb(17, 29, 44);
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             margin: 0;
             padding: 0;
         }
 
-        /* This centers all text content */
         .content-wrapper {
-            max-width: 900px;     /* makes the text column narrow */
-            margin: 10px;       /* centers it horizontally */
-            padding: 20px;      /* adds space around text */
+            max-width: 800px;
+            margin: 10px;
+            padding: 10px;
         }
 
-
-        /* Sidebar menu */
         .sidebar ul {
             list-style: none;
             padding: 10px;
-            margin: 0px 0;
+            margin: 0;
         }
 
         .sidebar li {
@@ -41,110 +39,323 @@
             font-size: 20px;
         }
 
-        /* Layout: sidebar on the left, content on the right */
         .layout {
             display: flex;
             align-items: flex-start;
         }
 
-        /* Sidebar placed on left */
         .sidebar {
-            width: 200px;
-            position: sticky;   /* sticks as you scroll */
-            top: 70px;
-            padding-right: 20px;
+            width: 170px;
+            position: sticky;
+            top: 40px;
+            padding-right: 0;
         }
 
-        /* The main content shifts to the right */
         .content-wrapper {
-            max-width: 900px;
-            margin-left:100px;   /* space between sidebar and content */
-            margin-right:50px;
+            max-width: 800px;
+            margin-left: 100px;
+            margin-right: 50px;
         }
     </style>
-
-    <!-- D3 library -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
-<div class="layout"> 
+<div class="layout">
     <!-- LEFT SIDEBAR -->
     <nav class="sidebar">
         <ul>
             <li><a href="MAIN.html">Home</a></li>
-            <li><a href="about.html">Author</a></li>
-            <li><a href="Dishes.html">Dishes</a></li>
+            <li><a href="HTML/about.html">Author</a></li>
+            <li><a href="HTML/Dishes.html">Dishes</a></li>
             <li><a href="https://www.guadalupetx.gov/page/open/1868/0/2025_ElectedOfficials_Fed.pdf">Contact</a></li>
         </ul>
     </nav>
 
-<div class="content-wrapper">
+    <div class="content-wrapper">
 
-    <h1 style="font-family: Georgia, 'Times New Roman', serif; font-size: 50px; color: rgb(31, 234, 109); text-align: center;">
-        Alzheimer's 🧠
-    </h1>
+        <h1 style="font-family: Georgia, 'Times New Roman', serif; font-size: 40px; color: rgb(31, 234, 109); text-align: center;">
+            Radiopharmaceutical Use Visualiser
+        </h1>
 
-    <h1 style="color: white;">Radiopharmaceuticals</h1>
+        <h1 style="color: white; font-size: 20px;">What are radiopharmaceuticals?</h1>
 
-    <hr>
+        <hr>
 
-    <a href="https://reasonator.toolforge.org/?q=Q33202843&lang=en"
-       target="_blank" style="color:white;">
-       an inspiration for this research
-    </a>
+        <a href="https://reasonator.toolforge.org/?q=Q33202843&lang=en"
+           target="_blank" style="color:white;">
+           an inspiration for this research
+        </a>
 
-    <br><br>
+        <br><br>
 
-    <p style="color: white;">
-        <img src="https://pubs.acs.org/cms/10.1021/acscentsci.3c01050/asset/images/large/oc3c01050_0001.jpeg"
-         alt="Radiopharmaceuticals diagram" height="200">
-        Radiopharmaceuticals, or medicinal radiocompounds, are a group of pharmaceutical drugs containing radioactive isotopes. Radiopharmaceuticals can be used as diagnostic and therapeutic agents. Radiopharmaceuticals emit radiation themselves, which is different from contrast media which absorb or alter external electromagnetism or ultrasound.
-    </p>
+        <p style="color: white;">
+            <img src="https://pubs.acs.org/cms/10.1021/acscentsci.3c01050/asset/images/large/oc3c01050_0001.jpeg"
+                 alt="Radiopharmaceuticals diagram" height="200">
+            Radiopharmaceuticals, or medicinal radiocompounds, are a group of pharmaceutical drugs containing radioactive isotopes. Radiopharmaceuticals can be used as diagnostic and therapeutic agents. Radiopharmaceuticals emit radiation themselves, which is different from contrast media which absorb or alter external electromagnetism or ultrasound.
+        </p>
 
-    <strong style="color:white;">Summarised desired properties of radiopharmaceuticals:</strong>
+        <strong style="color:white;">Summarised desired properties of radiopharmaceuticals:</strong>
 
-    <ul style="color:white;">
-        <li>Low binding inhibition constant (Ki)</li>
-        <li>Low dissociation constants (Kd &lt; 10 nM)</li>
-        <li>Slow but reversible off-rates</li>
-        <li>Small molecular weight (&lt; 450 Da)</li>
-        <li>Moderately lipophilic (logP 0.9–2.5)</li>
-        <li>No P-glycoprotein substrate activity</li>
-    </ul>
+        <ul style="color:white;">
+            <li>Low binding inhibition constant (Ki)</li>
+            <li>Low dissociation constants (Kd &lt; 10 nM)</li>
+            <li>Slow but reversible off-rates</li>
+            <li>Small molecular weight (&lt; 450 Da)</li>
+            <li>Moderately lipophilic (logP 0.9–2.5)</li>
+            <li>No P-glycoprotein substrate activity</li>
+        </ul>
 
-    <div class="box">Box1</div>
+        <hr>
+        <div class="box" style="color:white;">Box1</div>
 
-    <h2 style="color:red;">Library tests</h2>
+        <h2 style="color:red;">Library tests</h2>
 
-    <script>
-        console.log("D3 version:", d3.version);
+        <script>
+            console.log("D3 version:", d3.version);
 
-        d3.select(".content-wrapper")
-          .append("p")
-          .text("D3 is working!")
-          .style("color", "green");
-    </script>
-    </div>  
+            d3.select(".content-wrapper")
+              .append("p")
+              .text("D3 is working!")
+              .style("color", "green");
+        </script>
 
-<div class="section"; style="color:rgb(42, 217, 68);">
-    <h2>SPARQL Explorer (Wikidata, DBpedia, …)</h2>
+        <div class="section" style="color:rgb(42, 217, 68); padding-top: 50px; padding-right: 20px;">
+            <h2>SPARQL Explorer</h2>
 
-    <label for="endpoint">Endpoint URL:</label><br>
-    <input id="endpoint" type="text" value="https://query.wikidata.org/sparql"><br><br>
+            <label for="endpoint">Endpoint URL:</label><br>
+            <input id="endpoint" type="text" value="https://bio2rdf.org/sparql"><br><br>
 
-    <label for="query">SPARQL Query:</label><br>
-    <textarea id="query" rows="8">SELECT ?item ?itemLabel WHERE {
-      ?item wdt:P31 wd:Q146 .  # Instance of: domestic cat
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-    }
-    LIMIT 10</textarea><br>
+            <label for="query">SPARQL Query:</label><br>
+            <textarea id="query" rows="8" style="width:100%;">
+PREFIX rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX dct:     &lt;http://purl.org/dc/terms/&gt;
+PREFIX pharmgkb:&lt;http://bio2rdf.org/pharmgkb_vocabulary:&gt;
 
-    <button {background-colour :  #04AA6D;} id="run">Run Query</button>
+SELECT DISTINCT
+  
+  ?drugLabel
+  
+  ?atcID
+WHERE {
+  ?drug pharmgkb:x-atc ?atc .
+  ?drug rdfs:label ?drugLabel .
+  ?atc  dct:identifier ?atcID .
 
-    <div id="results"></div>
+  FILTER (
+    STRSTARTS(STR(?atc), "http://bio2rdf.org/atc:V09") ||
+    STRSTARTS(STR(?atc), "http://bio2rdf.org/atc:V10")
+  )
+}
+            </textarea><br>
+
+            <button id="run" style="background-color:#04AA6D; color:white; padding:5px 10px; border:none; cursor:pointer;">
+                Run Query
+            </button>
+
+            <div id="results" style="margin-top:20px; color:white;"></div>
+
+            <h2 style="color:white; margin-top:30px;">Knowledge graph</h2>
+            <svg id="graph" width="600" height="400" style="background:#102030;"></svg>
+        </div>
+    </div>
 </div>
-</div>  
+
+<script>
+  // ---- Render JSON result as HTML table ----
+  function renderResults(data) {
+    const bindings = data.results?.bindings;
+    if (!bindings || bindings.length === 0) return '<p>No results.</p>';
+
+    const vars = data.head.vars;
+    let html = '<table style="border-collapse:collapse; color:white;">';
+    html += '<thead><tr>';
+    vars.forEach(v => html += `<th style="border:1px solid #555; padding:4px;">${v}</th>`);
+    html += '</tr></thead><tbody>';
+
+    bindings.forEach(row => {
+      html += '<tr>';
+      vars.forEach(v => {
+        const cell = row[v];
+        const value = cell ? cell.value : '';
+        html += `<td style="border:1px solid #555; padding:4px;">${escapeHtml(value)}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    return html;
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ---- Main runner (GET – works for most public endpoints) ----
+  async function runSparql() {
+    const endpoint = document.getElementById('endpoint').value.trim();
+    const query    = document.getElementById('query').value.trim();
+    const resultsDiv = document.getElementById('results');
+
+    if (!endpoint || !query) {
+      resultsDiv.innerHTML = '<p style="color:red;">Endpoint and query required.</p>';
+      return;
+    }
+
+    resultsDiv.innerHTML = '<p>Loading…</p>';
+
+    const url = new URL(endpoint);
+    url.searchParams.append('query', query);
+    url.searchParams.append('format', 'json');
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/sparql-results+json'
+        }
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const data = await response.json();
+      resultsDiv.innerHTML = renderResults(data);
+
+      // Draw graph:
+      drawGraphFromSparql(data);
+
+    } catch (err) {
+      resultsDiv.innerHTML = `<p style="color:red;">Error: ${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+
+
+
+  // ---- Build nodes + links from SPARQL result ----
+  function buildGraphFromSparql(data) {
+    const bindings = data.results?.bindings || [];
+
+    const nodeMap = new Map();
+    const links = [];
+
+    function addNode(id, label, type) {
+      if (!nodeMap.has(id)) {
+        nodeMap.set(id, { id, label, type });
+      }
+      return nodeMap.get(id);
+    }
+
+    bindings.forEach(row => {
+      const drugURI   = row.drug?.value;
+      const drugLabel = row.drugLabel?.value || drugURI;
+      const atcURI    = row.atc?.value;
+      const atcID     = row.atcID?.value || atcURI;
+
+      if (!drugURI || !atcURI) return;
+
+      const drugNode = addNode(drugURI, drugLabel, "drug");
+      const atcNode  = addNode(atcURI,  atcID,     "atc");
+
+      links.push({
+        source: drugNode.id,
+        target: atcNode.id
+      });
+    });
+
+    return {
+      nodes: Array.from(nodeMap.values()),
+      links: links
+    };
+  }
+
+  // ---- Draw force-directed graph with D3 ----
+  function drawGraphFromSparql(data) {
+    const graph = buildGraphFromSparql(data);
+
+    const svg = d3.select("#graph");
+    svg.selectAll("*").remove(); // clear old graph
+
+    const width = +svg.attr("width");
+    const height = +svg.attr("height");
+
+    const color = d3.scaleOrdinal()
+      .domain(["drug", "atc"])
+      .range(["#ffcc00", "#66ccff"]);
+
+    const simulation = d3.forceSimulation(graph.nodes)
+      .force("link", d3.forceLink(graph.links)
+        .id(d => d.id)
+        .distance(80))
+      .force("charge", d3.forceManyBody().strength(-150))
+      .force("center", d3.forceCenter(width / 2, height / 2));
+
+    const link = svg.append("g")
+      .attr("stroke", "#aaa")
+      .attr("stroke-width", 1.2)
+      .selectAll("line")
+      .data(graph.links)
+      .enter().append("line");
+
+    const node = svg.append("g")
+      .selectAll("circle")
+      .data(graph.nodes)
+      .enter().append("circle")
+        .attr("r", 8)
+        .attr("fill", d => color(d.type))
+        .call(
+          d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended)
+        );
+
+    const label = svg.append("g")
+      .selectAll("text")
+      .data(graph.nodes)
+      .enter().append("text")
+        .attr("font-size", 10)
+        .attr("fill", "white")
+        .attr("dx", 10)
+        .attr("dy", 4)
+        .text(d => d.label);
+
+    simulation.on("tick", () => {
+      link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+      node
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
+
+      label
+        .attr("x", d => d.x)
+        .attr("y", d => d.y);
+    });
+
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+  }
+
+  document.getElementById('run').addEventListener('click', runSparql);
+</script>
 
 </body>
 </html>

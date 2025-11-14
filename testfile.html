@@ -1,68 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radiopharmaceuticals</title>
+  <meta charset="UTF-8">
+  <title>D3 example</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
-<body >
-<img src="Car.jpg" alt="car" width ="12">
-    <h1 style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif ; font-size: 50px; color: rgb(94, 3, 3); text-align: center;">
-Alzheimers </h1>
-<p></p>
-        <h1>Radiopharmaceuticals</h1>
-        <hr> <!-- This makes a line -->
-        <a href="https://reasonator.toolforge.org/?q=Q33202843&lang=en"
-        target="_blank"
-        title="link to article">
-            an inspiration for this research
-        </a> <!-- This makes a link -->
-        <iframe 
-            src="https://reasonator.toolforge.org/?q=Q33202843&lang=en" 
-            title="Link"
-            width="1000"
-            height="800"
-            style="border:none;">
-        </iframe>
+<body>
 
-<br> <!-- This makes a line break-->
-<br> <!-- This makes a line break-->
-<img src="https://pubs.acs.org/cms/10.1021/acscentsci.3c01050/asset/images/large/oc3c01050_0001.jpeg" alt="Radiopharmaceuticals diagram"
-        height="200"> <!-- This links an image from web -->
-    
-<p style="font-family:Verdana, Geneva, Tahoma, sans-serif">Radiopharmaceuticals for targeting amyloid aggregates are primarily used in positron emission tomography (PET) scans to diagnose conditions like Alzheimer's disease. 
-            Approved examples include florbetapir F18 (Amyvid™), florbetaben F18 (Neuraceq™), and flutemetamol F18 (Vizamyl™), which are designed to bind to amyloid plaques in the brain.
-<br>
-<img src="https://pubs.acs.org/cms/10.1021/acscentsci.3c01050/asset/images/large/oc3c01050_0001.jpeg" alt="Radiopharmaceuticals diagram"
-        height="200"> <!-- This links an image from web -->
-<br>
-<strong>Summarised desired properties of radiopharmaceuticals:</strong>
-        <ul>
-        <!-- This makes an unordered list -->
-         <li>Low binding inhibition constant (Ki)</li>
-         <li>Low dissociation constants (Kd values of less than 10 nM)</li>
-         <li>a slow and reversible off-rates coupled (koff) with relatively high on-rates (kon)</li>
-         <li>small molecular weight (less than 450 Da)</li>
-         <li>moderately lipophilic (octanol-water partition coefficient (logP value) in the range of 0.9–2.5)</li>
-         <li>lack of P-glycoprotein substrate activity</li>
-         
+  <h1>Alzheimer's 🧠</h1>
 
-        </ul>
-</p>
-<h2 style="color: rgb(255, 0, 0); font-family: Arial; font-size: 28px; font-weight: bold;" style="font-family: 'Arial';">
-  Library tests
-</h2>
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script>
-  // Check if D3 loaded correctly
-  console.log("D3 version:", d3.version);
+  <h2>Example D3 chart</h2>
+  <div id="chart"></div>
 
-  // Example: create a simple D3 element
-  d3.select("body")
-    .append("p")
-    .text("D3 is working!")
-    .style("color", "green");
-</script>
+  <script>
+    const data = [4, 8, 15, 16, 23, 42];
+    const width = 400;
+    const height = 200;
+    const margin = { top: 20, right: 20, bottom: 30, left: 30 };
+
+    const svg = d3.select("#chart")
+      .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    const x = d3.scaleBand()
+      .domain(data.map((d, i) => i))
+      .range([margin.left, width - margin.right])
+      .padding(0.1);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data)])
+      .range([height - margin.bottom, margin.top]);
+
+    svg.selectAll("rect")
+      .data(data)
+      .enter()
+      .append("rect")
+        .attr("x", (d, i) => x(i))
+        .attr("y", d => y(d))
+        .attr("width", x.bandwidth())
+        .attr("height", d => (height - margin.bottom) - y(d))
+        .attr("fill", "lightgreen");
+
+    svg.append("g")
+      .attr("transform", `translate(0, ${height - margin.bottom})`)
+      .call(d3.axisBottom(x).tickFormat(i => i + 1));
+
+    svg.append("g")
+      .attr("transform", `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y));
+  </script>
 
 </body>
 </html>
