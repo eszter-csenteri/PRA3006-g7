@@ -47,7 +47,7 @@
         .sidebar {
             width: 170px;
             position: sticky;
-            top: 40px;
+            top: 0px;
             padding-right: 0;
         }
 
@@ -132,9 +132,9 @@ PREFIX dct:     &lt;http://purl.org/dc/terms/&gt;
 PREFIX pharmgkb:&lt;http://bio2rdf.org/pharmgkb_vocabulary:&gt;
 
 SELECT DISTINCT
-  
+  ?drug
   ?drugLabel
-  
+  ?atc
   ?atcID
 WHERE {
   ?drug pharmgkb:x-atc ?atc .
@@ -146,6 +146,7 @@ WHERE {
     STRSTARTS(STR(?atc), "http://bio2rdf.org/atc:V10")
   )
 }
+
             </textarea><br>
 
             <button id="run" style="background-color:#04AA6D; color:white; padding:5px 10px; border:none; cursor:pointer;">
@@ -155,7 +156,7 @@ WHERE {
             <div id="results" style="margin-top:20px; color:white;"></div>
 
             <h2 style="color:white; margin-top:30px;">Knowledge graph</h2>
-            <svg id="graph" width="600" height="400" style="background:#102030;"></svg>
+            <svg id="graph" width="1000" height="1000" style="background:#102030;"></svg>
         </div>
     </div>
 </div>
@@ -286,9 +287,12 @@ WHERE {
     const simulation = d3.forceSimulation(graph.nodes)
       .force("link", d3.forceLink(graph.links)
         .id(d => d.id)
-        .distance(80))
-      .force("charge", d3.forceManyBody().strength(-150))
-      .force("center", d3.forceCenter(width / 2, height / 2));
+        .distance(10))
+      .force("charge", d3.forceManyBody().strength(-40))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+  // NEW: gently pull every node towards the middle
+  .force("x", d3.forceX(width / 2).strength(0.05))
+  .force("y", d3.forceY(height / 2).strength(0.05));
 
     const link = svg.append("g")
       .attr("stroke", "#aaa")
