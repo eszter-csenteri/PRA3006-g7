@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radiopharmaceuticals 🧠</title>
+    <link rel="stylesheet" href="style.css">  <!-- this links to CSS -->
+
+    <!-- Main styles -->
+    <style>
+        /* Global colours */
+        body {
+            background-color: rgb(12, 31, 49);
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* This centers all text content */
+        .content-wrapper {
+            max-width: 900px;     /* makes the text column narrow */
+            margin: 10px;       /* centers it horizontally */
+            padding: 20px;      /* adds space around text */
+        }
+
+
+        /* Sidebar menu */
+        .sidebar ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0px 0;
+        }
+
+        .sidebar li {
+            margin: 10px 0;
+        }
+
+        .sidebar a {
+            color: rgb(0, 255, 153);
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        /* Layout: sidebar on the left, content on the right */
+        .layout {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        /* Sidebar placed on left */
+        .sidebar {
+            width: 200px;
+            position: sticky;   /* sticks as you scroll */
+            top: 70px;
+            padding-right: 20px;
+        }
+
+        /* The main content shifts to the right */
+        .content-wrapper {
+            max-width: 900px;
+            margin-left:100px;   /* space between sidebar and content */
+            margin-right:50px;
+        }
+    </style>
+
+    <!-- D3 library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+<div class="layout"> 
+    <!-- LEFT SIDEBAR -->
+    <nav class="sidebar">
+        <ul>
+            <li><a href="MAIN.html">Home</a></li>
+            <li><a href="about.html">Author</a></li>
+            <li><a href="Dishes.html">Dishes</a></li>
+            <li><a href="https://www.guadalupetx.gov/page/open/1868/0/2025_ElectedOfficials_Fed.pdf">Contact</a></li>
+        </ul>
+    </nav>
+
+<div class="content-wrapper">
+
+    <h1 style="font-family: Georgia, 'Times New Roman', serif; font-size: 50px; color: rgb(31, 234, 109); text-align: center;">
+        Alzheimer's 🧠
+    </h1>
+
+    <h1 style="color: white;">Radiopharmaceuticals</h1>
+
+    <hr>
+
+    <a href="https://reasonator.toolforge.org/?q=Q33202843&lang=en"
+       target="_blank" style="color:white;">
+       an inspiration for this research
+    </a>
+
+    <br><br>
+
+    <p style="color: white;">
+        <img src="https://pubs.acs.org/cms/10.1021/acscentsci.3c01050/asset/images/large/oc3c01050_0001.jpeg"
+         alt="Radiopharmaceuticals diagram" height="200">
+        Radiopharmaceuticals, or medicinal radiocompounds, are a group of pharmaceutical drugs containing radioactive isotopes. Radiopharmaceuticals can be used as diagnostic and therapeutic agents. Radiopharmaceuticals emit radiation themselves, which is different from contrast media which absorb or alter external electromagnetism or ultrasound.
+    </p>
+
+    <strong style="color:white;">Summarised desired properties of radiopharmaceuticals:</strong>
+
+    <ul style="color:white;">
+        <li>Low binding inhibition constant (Ki)</li>
+        <li>Low dissociation constants (Kd &lt; 10 nM)</li>
+        <li>Slow but reversible off-rates</li>
+        <li>Small molecular weight (&lt; 450 Da)</li>
+        <li>Moderately lipophilic (logP 0.9–2.5)</li>
+        <li>No P-glycoprotein substrate activity</li>
+    </ul>
+
+    <div class="box">Box1</div>
+
+    <h2 style="color:red;">Library tests</h2>
+
+    <script>
+        console.log("D3 version:", d3.version);
+
+        d3.select(".content-wrapper")
+          .append("p")
+          .text("D3 is working!")
+          .style("color", "green");
+    </script>
+    </div>  
+
+<div class="section"; style="color:rgb(42, 217, 68);">
+    <h2>SPARQL Explorer (Wikidata, DBpedia, …)</h2>
+
+    <label for="endpoint">Endpoint URL:</label><br>
+    <input id="endpoint" type="text" value="https://query.wikidata.org/sparql"><br><br>
+
+    <label for="query">SPARQL Query:</label><br>
+    <textarea id="query" rows="8">SELECT ?item ?itemLabel WHERE {
+      ?item wdt:P31 wd:Q146 .  # Instance of: domestic cat
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+    }
+    LIMIT 10</textarea><br>
+
+    <button {background-colour :  #04AA6D;} id="run">Run Query</button>
+
+    <div id="results"></div>
+</div>
+</div>  
+
+</body>
+</html>
