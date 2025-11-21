@@ -1,5 +1,30 @@
+body {
+  background-color: rgb(17, 29, 44);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 40px;
+  color: lightgreen;
+  text-align: center;
+}
+
+h2 {
+  color: white;
+  margin-top: 30px;
+}
+
+p {
+  color: white;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
 img{
-    float: right !important;
+    float: right;
     margin-left: 10px;
 }
 
@@ -41,4 +66,44 @@ img{
 
 .sidebar a:hover {
   background: #444;
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.sidebar li {
+  margin: 10px 0;
+}
+
+.sidebar a {
+  color: rgb(0, 255, 153);
+  text-decoration: none;
+  font-size: 20px;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+}
+
+.sidebar {
+  width: 170px;
+  position: sticky;
+  top: 0px;
+  padding-right: 0;
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin-left: 100px;
+  margin-right: 50px;
 }

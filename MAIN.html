@@ -4,59 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radiopharmaceuticals 🧠</title>
+
+    <!-- this links the CSS style file -->
     <link rel="stylesheet" href="/HTML/style.css">
 
     <!-- D3 library -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
-
-    <style>
-        body {
-            background-color: rgb(17, 29, 44);
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .content-wrapper {
-            max-width: 800px;
-            margin: 10px;
-            padding: 10px;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 10px;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin: 10px 0;
-        }
-
-        .sidebar a {
-            color: rgb(0, 255, 153);
-            text-decoration: none;
-            font-size: 20px;
-        }
-
-        .layout {
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .sidebar {
-            width: 170px;
-            position: sticky;
-            top: 0px;
-            padding-right: 0;
-        }
-
-        .content-wrapper {
-            max-width: 800px;
-            margin-left: 100px;
-            margin-right: 50px;
-        }
-    </style>
 </head>
 
 <body>
@@ -67,17 +20,16 @@
             <li><a href="MAIN.html">Home</a></li>
             <li><a href="HTML/about.html">Author</a></li>
             <li><a href="HTML/Dishes.html">Dishes</a></li>
-            <li><a href="https://www.guadalupetx.gov/page/open/1868/0/2025_ElectedOfficials_Fed.pdf">Contact</a></li>
+            
         </ul>
     </nav>
 
     <div class="content-wrapper">
-
-        <h1 style="font-family: Georgia, 'Times New Roman', serif; font-size: 40px; color: rgb(31, 234, 109); text-align: center;">
+        <h1>
             Radiopharmaceutical Use Visualiser
         </h1>
 
-        <h1 style="color: white; font-size: 20px;">What are radiopharmaceuticals?</h1>
+        <h2>What are radiopharmaceuticals?</h2>
 
         <hr>
 
@@ -87,7 +39,7 @@
         </a>
 
         <br><br>
-
+<!--sidebar ah-->
         <p style="color: white;">
             <img src="https://pubs.acs.org/cms/10.1021/acscentsci.3c01050/asset/images/large/oc3c01050_0001.jpeg"
                  alt="Radiopharmaceuticals diagram" height="200">
@@ -124,7 +76,7 @@
 
             <label for="endpoint">Endpoint URL:</label><br>
             <input id="endpoint" type="text" value="https://bio2rdf.org/sparql"><br><br>
-
+<!--query implementation in website here-->
             <label for="query">SPARQL Query:</label><br>
             <textarea id="query" rows="8" style="width:100%;">
 PREFIX rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
@@ -155,103 +107,176 @@ WHERE {
 
             <div id="results" style="margin-top:20px; color:white;"></div>
 
-            <h2 style="color:white; margin-top:30px;">Knowledge graph</h2>
+            <h2>Knowledge graph</h2>
             <svg id="graph" width="1000" height="1000" style="background:#102030;"></svg>
         </div>
     </div>
 </div>
 
 <script>
-  // ---- Render JSON result as HTML table ----
-  function renderResults(data) {
-    const bindings = data.results?.bindings;
-    if (!bindings || bindings.length === 0) return '<p>No results.</p>';
 
-    const vars = data.head.vars;
-    let html = '<table style="border-collapse:collapse; color:white;">';
-    html += '<thead><tr>';
-    vars.forEach(v => html += `<th style="border:1px solid #555; padding:4px;">${v}</th>`);
-    html += '</tr></thead><tbody>';
 
-    bindings.forEach(row => {
-      html += '<tr>';
-      vars.forEach(v => {
-        const cell = row[v];
-        const value = cell ? cell.value : '';
-        html += `<td style="border:1px solid #555; padding:4px;">${escapeHtml(value)}</td>`;
-      });
-      html += '</tr>';
+
+// ---- Render JSON result as an HTML table ----
+function renderResults(data) {
+
+  // "bindings" contains all result rows from the SPARQL endpoint.
+  // Example structure: data.results.bindings = [{ var1:{value:".."}, var2:{value:".."} }, ...]
+  const bindings = data.results?.bindings;
+
+  // If no results, return simple message.
+  if (!bindings || bindings.length === 0) return '<p>No results.</p>'; //in case there are no bindings
+
+  // "vars" contains the variable names returned by SPARQL (column headers)
+  const vars = data.head.vars; //column headers
+
+  // Start building the HTML table
+  let html = '<table style="border-collapse:collapse; color:white;">';
+
+  // ---- Header row ----
+  html += '<thead><tr>';
+  vars.forEach(v => {
+    html += `<th style="border:1px solid #555; padding:4px;">${v}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  // ---- Table rows ----
+  bindings.forEach(row => {
+    html += '<tr>';
+
+    // Loop through each variable and print the corresponding cell value
+    vars.forEach(v => {
+      const cell = row[v];             // cell is an object like { type:"literal", value:"example" }
+      const value = cell ? cell.value : ''; // If no cell value -> empty string
+
+      // Escape HTML to prevent DOM injection (important for safety)
+      html += `<td style="border:1px solid #555; padding:4px;">${escapeHtml(value)}</td>`;
     });
-    html += '</tbody></table>';
-    return html;
-  }
 
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  return html;  // Return the full HTML table as a string
+}
+
+// ---- Safely escape HTML content ----
+// Prevents strings like "<script>" from being interpreted as HTML.
+// It does this by placing the text inside a temporary <div>, then reading its textContent.
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML; // the browser automatically escapes any HTML characters
+}
+
+// section above comments done
+
 
   // ---- Main runner (GET – works for most public endpoints) ----
-  async function runSparql() {
-    const endpoint = document.getElementById('endpoint').value.trim();
-    const query    = document.getElementById('query').value.trim();
-    const resultsDiv = document.getElementById('results');
 
-    if (!endpoint || !query) {
-      resultsDiv.innerHTML = '<p style="color:red;">Endpoint and query required.</p>';
-      return;
-    }
 
-    resultsDiv.innerHTML = '<p>Loading…</p>';
 
-    const url = new URL(endpoint);
-    url.searchParams.append('query', query);
-    url.searchParams.append('format', 'json');
+// Main function to run the SPARQL query when user clicks a button, for example
+async function runSparql() {
+  // Get the SPARQL endpoint URL from the input field
+  const endpoint = document.getElementById('endpoint').value.trim();
 
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/sparql-results+json'
-        }
-      });
+  // Get the SPARQL query string from the text area/input
+  const query = document.getElementById('query').value.trim();
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  // The div where we will show messages (loading, errors) and the result table
+  const resultsDiv = document.getElementById('results');
 
-      const data = await response.json();
-      resultsDiv.innerHTML = renderResults(data);
-
-      // Draw graph:
-      drawGraphFromSparql(data);
-
-    } catch (err) {
-      resultsDiv.innerHTML = `<p style="color:red;">Error: ${escapeHtml(err.message)}</p>`;
-    }
+  // Basic validation: make sure both endpoint and query are provided
+  if (!endpoint || !query) {
+    resultsDiv.innerHTML = '<p style="color:red;">Endpoint and query required.</p>';
+    return; // stop running if missing
   }
+
+  // Show a loading message while we wait for the SPARQL endpoint
+  resultsDiv.innerHTML = '<p>Loading…</p>';
+
+  // Build the request URL with query parameters
+  const url = new URL(endpoint);
+  url.searchParams.append('query', query);   // SPARQL query
+  url.searchParams.append('format', 'json'); // ask for JSON results
+
+  try {
+    // Send the HTTP GET request to the SPARQL endpoint
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        // Explicitly request SPARQL results in JSON format
+        'Accept': 'application/sparql-results+json'
+      }
+    });
+
+    // If the HTTP status is not in the 200–299 range, treat it as an error
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    // Parse the response body as JSON (this should match the SPARQL JSON format)
+    const data = await response.json();
+
+    // Render the result table using your renderResults() function
+    resultsDiv.innerHTML = renderResults(data);
+
+    // Additionally, draw a graph based on the same SPARQL result
+    // (Assumes drawGraphFromSparql is defined elsewhere)
+    drawGraphFromSparql(data);
+
+  } catch (err) {
+    // If anything goes wrong (network error, bad JSON, HTTP error, etc.),
+    // show a red error message. escapeHtml prevents HTML injection.
+    resultsDiv.innerHTML =
+      `<p style="color:red;">Error: ${escapeHtml(err.message)}</p>`;
+  }
+}
 
 
 
 
   // ---- Build nodes + links from SPARQL result ----
-  function buildGraphFromSparql(data) {
+
+
+  
+  function buildGraphFromSparql(data) { //
+    
+  // Get the list of result rows from the SPARQL result.
+  // If results or bindings don't exist, fallback to an empty array.
     const bindings = data.results?.bindings || [];
 
+  // nodeMap ensures we do NOT create duplicate nodes for the same URI
     const nodeMap = new Map();
-    const links = [];
+    
+    const links = [];   // Array for storing all graph links (edges)
 
+  /**
+   * Helper function to create a node if it doesn't exist
+   * id     = the unique identifier (usually URI)
+   * label  = a human-readable label
+   * type   = category ("drug", "atc", etc.)
+   */
     function addNode(id, label, type) {
-      if (!nodeMap.has(id)) {
+      if (!nodeMap.has(id)) {   // Only create the node if this ID is not already in the map
         nodeMap.set(id, { id, label, type });
       }
-      return nodeMap.get(id);
+      return nodeMap.get(id);  // Return the existing or newly created node
     }
-
-    bindings.forEach(row => {
+//process sparql results
+    bindings.forEach(row => { //loop through each row to extract the drug
       const drugURI   = row.drug?.value;
       const drugLabel = row.drugLabel?.value || drugURI;
       const atcURI    = row.atc?.value;
       const atcID     = row.atcID?.value || atcURI;
+
+//since sparql querry are catagorised in a way such that {
+ // "drug":      { "type": "uri", "value": "http://example/drug/123" },
+  //"drugLabel": { "type": "literal", "value": "Aspirin" },
+  //"atc":       { "type": "uri", "value": "http://example/atc/A01" },
+  //"atcID":     { "type": "literal", "value": "A01" }
+//     }
+
+
 
       if (!drugURI || !atcURI) return;
 
@@ -263,6 +288,9 @@ WHERE {
         target: atcNode.id
       });
     });
+
+//alo
+
 
     return {
       nodes: Array.from(nodeMap.values()),
