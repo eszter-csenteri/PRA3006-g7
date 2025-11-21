@@ -65,7 +65,16 @@
         <h2>How were protein targets determined?</h2>
         <hr>
         <p>When looking for radiopharmaceuticals linkeed to their relevant receptors, only </p> 
-
+        <hr style="height:5px; background-color: white;">
+        <h2>SPARQL Explorer</h2>
+        <h3>Instructions:</h3>
+        <ul>
+            <li>Enter the SPARQL endpoint URL (default is set to ChEMBL mirror)</li>
+            <li>Enter your SPARQL query in the text area (a default query is provided)</li>
+            <li>Click the "Run Query" button to execute the query</li>
+            <li>View the results in the "Results" section below the button</li>
+            <li>The knowledge graph visualization will be displayed in the SVG area below the results</li>
+        </ul>
         <script>
             console.log("D3 version:", d3.version);
 
@@ -76,7 +85,7 @@
         </script>
 
         <div class="section">
-            <h2>SPARQL Explorer</h2>
+            
 
             <label for="endpoint">Endpoint URL:</label><br>
             <input id="endpoint" type="text" value="https://chemblmirror.rdf.bigcat-bioinformatics.org/sparql"><br><br>

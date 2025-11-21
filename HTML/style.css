@@ -31,6 +31,7 @@ p {
 
 ul {
   color: white;
+  line-height: 30px;
 }
 
 img{
@@ -124,29 +125,10 @@ img{
   margin-right: 50px;
 }
 
-/* trying to make a grid */
-.grid-container{
-  height: 100%;
-  display: grid;
-  grid-gap: 20px 20 px;
-
-  grid-template-areas:"header header"
-                      "content sidebar"
-                      "footer footer";
-}
-
-#header {
-  grid-area:header;
-}
-
-#content {
-  grid-area:content;
-}
-
-#sidebar {
-  grid-area:sidebar;
-}
-
-#footer{
-  grid-area:footer;
+/* here I try the flex thingy */
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
