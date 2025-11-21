@@ -26,8 +26,10 @@
 
     <div class="content-wrapper">
         <h1>
-            Radiopharmaceutical Use Visualiser
+            Radiopharmaceuticals
         </h1>
+
+        <h2 style= "text-align: center;"> Exploring protein targets visually</h2> 
 
         <h2>What are radiopharmaceuticals?</h2>
 
@@ -58,9 +60,11 @@
         </ul>
 
         <hr>
-        <div class="box"> Research question: Which targets do radiopharmaceuticals bind to?</div>
+        <div class="box"> Research question: Which receptors are most commonly targeted by radiopharmaceuticals, and how do their binding selectivity profiles vary?</div>
 
-        
+        <h2>How were protein targets determined?</h2>
+        <hr>
+        <p>When looking for radiopharmaceuticals linkeed to their relevant receptors, only </p> 
 
         <script>
             console.log("D3 version:", d3.version);
@@ -84,44 +88,67 @@ PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
 
 SELECT DISTINCT
-  ?molecule
+  ?molecule           # radiopharmaceutical child
   ?molName
   ?atcCode
-  ?molecule2
+  ?molecule2          # parent molecule (the one with binding data)
   ?mol2Name
   ?target
   ?targetName
-  ?assay
-  ?assayName
-  ?type
-  ?value
+  ?Ki                 # best Ki (nM) for this target & molecule2
+  ?KiBest             # best Ki over all targets for this molecule2
+  (xsd:decimal(?Ki) / xsd:decimal(?KiBest) AS ?Selectivity_vs_best)
 WHERE {
 
-  # Radiopharmaceutical small molecules
+  ######## Radiopharmaceutical and parent molecule ########
+
   ?molecule a cco:SmallMolecule ;
             rdfs:label ?molName ;
             cco:atcClassification ?atcCode ;
             cco:hasParentMolecule ?molecule2 .
 
-  FILTER(STRSTARTS(?atcCode, "V09") || STRSTARTS(?atcCode, "V10"))
+  # V09 = Diagnostic radiopharmaceuticals
+  # V10 = Therapeutic radiopharmaceuticals
+  FILTER(STRSTARTS(STR(?atcCode), "V09") || STRSTARTS(STR(?atcCode), "V10"))
 
-  # Parent molecule label
   ?molecule2 rdfs:label ?mol2Name .
 
-  ### --- Binding assays for molecule2 --- ###
-  ?activity cco:hasMolecule ?molecule2 ;
-            cco:hasAssay ?assay ;
-            cco:type ?type ;
-            cco:standardValue ?value .
+  ######## Per-target Ki for each parent molecule (molecule2) ########
+  # Get the best (minimum) Ki per (molecule2, target)
 
-  # Assay and target
-  ?assay rdfs:label ?assayName ;
-         cco:hasTarget ?target .
+  {
+    SELECT ?molecule2 ?target ?targetName (MIN(xsd:decimal(?value)) AS ?Ki)
+    WHERE {
+      ?activity  cco:hasMolecule ?molecule2 ;
+                 cco:hasAssay    ?assay ;
+                 cco:type        ?type ;
+                 cco:standardValue ?value .
 
-  ?target rdfs:label ?targetName .
+      ?assay cco:hasTarget ?target .
+      ?target rdfs:label ?targetName .
+
+      # Only binding affinity entries
+      FILTER(?type = "Ki")
+    }
+    GROUP BY ?molecule2 ?target ?targetName
+  }
+
+  ######## Best Ki per molecule2 (the primary/best-bound target) ########
+
+  {
+    SELECT ?molecule2 (MIN(xsd:decimal(?valueBest)) AS ?KiBest)
+    WHERE {
+      ?activityBest  cco:hasMolecule ?molecule2 ;
+                     cco:hasAssay    ?assayBest ;
+                     cco:type        ?typeBest ;
+                     cco:standardValue ?valueBest .
+      FILTER(?typeBest = "Ki")
+    }
+    GROUP BY ?molecule2
+  }
 }
-LIMIT 200
-
+ORDER BY ?molecule2 ?Selectivity_vs_best
+LIMIT 500
 
             </textarea><br>
 
@@ -129,6 +156,13 @@ LIMIT 200
                 Run Query
             </button>
 
+            <!--test for the dropdown-->            
+            <label style = "color:white;">View alo</label>
+            <select id = "viewSelector" style = "margin-left:10px; padding :5px;">
+                
+- eulav noitpo>
+            
+            
             <div id="results" style="margin-top:20px; color:white;"></div>
 
             <h2>Knowledge graph</h2>
@@ -142,25 +176,28 @@ LIMIT 200
 
 
 // ---- Render JSON result as an HTML table ----
+// ---- Render JSON result as an HTML table ----
 function renderResults(data) {
 
   // "bindings" contains all result rows from the SPARQL endpoint.
-  // Example structure: data.results.bindings = [{ var1:{value:".."}, var2:{value:".."} }, ...]
-  const molecule = data.results?.molecule;
+  // Example: data.results.bindings = [{ var1:{value:".."}, var2:{value:".."} }, ...]
+  const bindings = data.results?.bindings || [];
 
   // If no results, return simple message.
-  if (!bindings || bindings.length === 0) return '<p>No results.</p>'; //in case there are no bindings
+  if (bindings.length === 0) {
+    return '<p>No results.</p>';
+  }
 
   // "vars" contains the variable names returned by SPARQL (column headers)
-  const vars = data.head.vars; //column headers
+  const vars = data.head?.vars || Object.keys(bindings[0] || {});
 
   // Start building the HTML table
-  let html = '<table style="border-collapse:collapse; color:white;">';
+  let html = '<table style="border-collapse:collapse; color:white; font-size:0.9rem;">';
 
   // ---- Header row ----
   html += '<thead><tr>';
   vars.forEach(v => {
-    html += `<th style="border:1px solid #555; padding:4px;">${v}</th>`;
+    html += `<th style="border:1px solid #555; padding:4px;">${escapeHtml(v)}</th>`;
   });
   html += '</tr></thead><tbody>';
 
@@ -170,11 +207,18 @@ function renderResults(data) {
 
     // Loop through each variable and print the corresponding cell value
     vars.forEach(v => {
-      const cell = row[v];             // cell is an object like { type:"literal", value:"example" }
-      const value = cell ? cell.value : ''; // If no cell value -> empty string
+      const cell  = row[v];                    // e.g. { type:"literal", value:"example" }
+      const value = cell ? cell.value : '';    // If no cell value -> empty string
 
-      // Escape HTML to prevent DOM injection (important for safety)
-      html += `<td style="border:1px solid #555; padding:4px;">${escapeHtml(value)}</td>`;
+      let cellHtml = escapeHtml(value);
+
+      // If it’s a URI, make it clickable
+      if (cell && cell.type === 'uri' && value) {
+        const safeUri = escapeHtml(value);
+        cellHtml = `<a href="${safeUri}" target="_blank" style="color:#7fc5ff;">${safeUri}</a>`;
+      }
+
+      html += `<td style="border:1px solid #555; padding:4px;">${cellHtml}</td>`;
     });
 
     html += '</tr>';
@@ -184,77 +228,135 @@ function renderResults(data) {
   return html;  // Return the full HTML table as a string
 }
 
-// ---- Safely escape HTML content ----
-// Prevents strings like "<script>" from being interpreted as HTML.
-// It does this by placing the text inside a temporary <div>, then reading its textContent.
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML; // the browser automatically escapes any HTML characters
-}
-
 // section above comments done
 
 
   // ---- Main runner (GET – works for most public endpoints) ----
 
 
+// ---- Render JSON result as an HTML table ----
+function renderResults(data) {
+  // All result rows from the SPARQL endpoint
+  const bindings = data.results?.bindings || [];
 
-// Main function to run the SPARQL query when user clicks a button, for example
-async function runSparql() {
-  // Get the SPARQL endpoint URL from the input field
-  const endpoint = document.getElementById('endpoint').value.trim();
-
-  // Get the SPARQL query string from the text area/input
-  const query = document.getElementById('query').value.trim();
-
-  // The div where we will show messages (loading, errors) and the result table
-  const resultsDiv = document.getElementById('results');
-
-  // Basic validation: make sure both endpoint and query are provided
-  if (!endpoint || !query) {
-    resultsDiv.innerHTML = '<p style="color:red;">Endpoint and query required.</p>';
-    return; // stop running if missing
+  if (bindings.length === 0) {
+    return '<p>No results.</p>';
   }
 
-  // Show a loading message while we wait for the SPARQL endpoint
+  // Variable names (columns)
+  const vars = data.head?.vars || Object.keys(bindings[0] || {});
+
+  let html = '<table style="border-collapse:collapse; color:white; font-size:0.9rem;">';
+
+  // Header
+  html += '<thead><tr>';
+  vars.forEach(v => {
+    html += `<th style="border:1px solid #555; padding:4px;">${escapeHtml(v)}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  // Rows
+  bindings.forEach(row => {
+    html += '<tr>';
+
+    vars.forEach(v => {
+      const cell  = row[v];
+      const value = cell ? cell.value : '';
+
+      let cellHtml = escapeHtml(value);
+
+      // Make URIs clickable
+      if (cell && cell.type === 'uri' && value) {
+        const safeUri = escapeHtml(value);
+        cellHtml = `<a href="${safeUri}" target="_blank" style="color:#7fc5ff;">${safeUri}</a>`;
+      }
+
+      html += `<td style="border:1px solid #555; padding:4px;">${cellHtml}</td>`;
+    });
+
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  return html;
+}
+
+// ---- Safely escape HTML content ----
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text == null ? '' : String(text);
+  return div.innerHTML;
+}
+
+// ---- Main runner (GET – works for most public endpoints) ----
+async function runSparql() {
+  const endpoint = document.getElementById('endpoint').value.trim();
+  const query    = document.getElementById('query').value.trim();
+  const resultsDiv = document.getElementById('results');
+
+  if (!endpoint || !query) {
+    resultsDiv.innerHTML = '<p style="color:red;">Endpoint and query required.</p>';
+    return;
+  }
+
+  // Show loading
   resultsDiv.innerHTML = '<p>Loading…</p>';
 
-  // Build the request URL with query parameters
-  const url = new URL(endpoint);
-  url.searchParams.append('query', query);   // SPARQL query
-  url.searchParams.append('format', 'json'); // ask for JSON results
+  let url;
+  try {
+    url = new URL(endpoint);
+  } catch (e) {
+    resultsDiv.innerHTML = `<p style="color:red;">Invalid endpoint URL.</p>`;
+    console.error('Invalid endpoint URL:', endpoint, e);
+    return;
+  }
+
+  url.searchParams.append('query', query);
+  url.searchParams.append('format', 'json');
 
   try {
-    // Send the HTTP GET request to the SPARQL endpoint
-    const response = await fetch(url, {
+    console.log('Sending SPARQL request to:', url.toString());
+
+    const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
-        // Explicitly request SPARQL results in JSON format
         'Accept': 'application/sparql-results+json'
       }
     });
 
-    // If the HTTP status is not in the 200–299 range, treat it as an error
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    console.log('Response status:', response.status);
 
-    // Parse the response body as JSON (this should match the SPARQL JSON format)
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
     const data = await response.json();
+    console.log('SPARQL JSON result:', data);
 
-    // Render the result table using your renderResults() function
+    // Render table
     resultsDiv.innerHTML = renderResults(data);
 
-    // Additionally, draw a graph based on the same SPARQL result
-    // (Assumes drawGraphFromSparql is defined elsewhere)
-    drawGraphFromSparql(data);
+    // Draw graph (make sure this function exists)
+    if (typeof drawGraphFromSparql === 'function') {
+      drawGraphFromSparql(data);
+    } else {
+      console.warn('drawGraphFromSparql is not defined.');
+    }
 
   } catch (err) {
-    // If anything goes wrong (network error, bad JSON, HTTP error, etc.),
-    // show a red error message. escapeHtml prevents HTML injection.
+    console.error('SPARQL error:', err);
     resultsDiv.innerHTML =
       `<p style="color:red;">Error: ${escapeHtml(err.message)}</p>`;
   }
 }
+
+// ---- Wire the button to runSparql ----
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('run');
+  if (btn) {
+    btn.addEventListener('click', runSparql);
+  }
+});
 
 
 
@@ -263,166 +365,193 @@ async function runSparql() {
 
 
   
-  function buildGraphFromSparql(data) { //
-    
-  // Get the list of result rows from the SPARQL result.
-  // If results or bindings don't exist, fallback to an empty array.
-    const bindings = data.results?.bindings || [];
+  // ---- Build nodes + links for: molName – mol2Name – targetName ----
+function buildGraphFromSparql(data) {
+  const bindings = data.results?.bindings || [];
 
-  // nodeMap ensures we do NOT create duplicate nodes for the same URI
-    const nodeMap = new Map();
-    
-    const links = [];   // Array for storing all graph links (edges)
+  const nodeMap = new Map(); // avoid duplicate nodes
+  const links = [];
 
-  /**
-   * Helper function to create a node if it doesn't exist
-   * id     = the unique identifier (usually URI)
-   * label  = a human-readable label
-   * type   = category ("drug", "atc", etc.)
-   */
-    function addNode(id, label, type) {
-      if (!nodeMap.has(id)) {   // Only create the node if this ID is not already in the map
-        nodeMap.set(id, { id, label, type });
-      }
-      return nodeMap.get(id);  // Return the existing or newly created node
+  // Helper to add/get a node
+  function addNode(id, label, type) {
+    if (!id) return null; // skip if no URI
+    if (!nodeMap.has(id)) {
+      nodeMap.set(id, { id, label, type });
     }
-//process sparql results
-    bindings.forEach(row => { //loop through each row to extract the drug
-      const drugURI   = row.drug?.value;
-      const drugLabel = row.drugLabel?.value || drugURI;
-      const atcURI    = row.atc?.value;
-      const atcID     = row.atcID?.value || atcURI;
-//add constant depending on if we change the query so the visualisation works after.!
+    return nodeMap.get(id);
+  }
 
+  bindings.forEach(row => {
+    const moleculeURI = row.molecule?.value;   // radiopharmaceutical
+    const molName     = row.molName?.value || moleculeURI;
 
+    const parentURI   = row.molecule2?.value;  // parent molecule
+    const mol2Name    = row.mol2Name?.value || parentURI;
 
-//since sparql querry are catagorised in a way such that {
- // "drug":      { "type": "uri", "value": "http://example/drug/123" },
-  //"drugLabel": { "type": "literal", "value": "Aspirin" },
-  //"atc":       { "type": "uri", "value": "http://example/atc/A01" },
-  //"atcID":     { "type": "literal", "value": "A01" }
-//     }
+    const targetURI   = row.target?.value;     // biological target
+    const targetName  = row.targetName?.value || targetURI;
 
+    // Create nodes
+    const moleculeNode = addNode(moleculeURI, molName, "molecule");
+    const parentNode   = addNode(parentURI,  mol2Name, "parent");
+    const targetNode   = addNode(targetURI,  targetName, "target");
 
-
-      if (!drugURI || !atcURI) return; // || means or; !drugURI --> if drug uri is missing then stop the function 
-
-
-//node field : 
-// id : drug uri
-//label : readable names 
-//type : drugs
-      const drugNode = addNode(drugURI, drugLabel, "drug"); //adding nodes for dryg
-      const atcNode  = addNode(atcURI,  atcID,     "atc");//atc nodes
-
-      links.push({ //adding a link between the drug and atxc code, create a D3 compatible link
-        source: drugNode.id,
-        target: atcNode.id
+    // Links: molecule -> parent
+    if (moleculeNode && parentNode) {
+      links.push({
+        source: moleculeNode.id,
+        target: parentNode.id,
+        relation: "hasParentMolecule"
       });
-    });
-//due to this only a few are connected?
-//alo
+    }
 
+    // Links: parent -> target
+    if (parentNode && targetNode) {
+      links.push({
+        source: parentNode.id,
+        target: targetNode.id,
+        relation: "hasTarget"
+      });
+    }
+  });
 
-    return {
-      nodes: Array.from(nodeMap.values()),
-      links: links
-    };
+  return {
+    nodes: Array.from(nodeMap.values()),
+    links
+  };
+}
+
+// ---- Draw force-directed knowledge graph ----
+function drawGraphFromSparql(data) {
+  const graph = buildGraphFromSparql(data);
+
+  const svg = d3.select("#graph");
+  svg.selectAll("*").remove(); // clear previous graph
+
+  const width  = +svg.attr("width");
+  const height = +svg.attr("height");
+
+  const color = d3.scaleOrdinal()
+
+    .domain(["molecule", "parent", "target"])
+    .range(["#ffcc00", "#66ccff", "#ff6699"]);
+//legendary ah :
+// ---- Legend ----
+const legendData = [
+  { type: "molecule", label: "Molecule (molName)" },
+  { type: "parent",   label: "Parent Molecule (mol2Name)" },
+  { type: "target",   label: "Target (targetName)" }
+];
+
+  const legend = svg.append("g")
+    .attr("class", "legend")
+    .attr("transform", "translate(20, 20)");
+
+  legend.selectAll("legend-dots")
+    .data(legendData)
+    .enter()
+    .append("circle")
+    .attr("cx", 0)
+    .attr("cy", (d, i) => i * 22)
+    .attr("r", 7)
+    .style("fill", d => color(d.type));
+
+  legend.selectAll("legend-labels")
+    .data(legendData)
+    .enter()
+    .append("text")
+    .attr("x", 15)
+    .attr("y", (d, i) => i * 22 + 4)
+    .style("fill", "white")
+    .style("font-size", "14px")
+    .text(d => d.label);
+  //other
+
+  const simulation = d3.forceSimulation(graph.nodes)
+    .force("link", d3.forceLink(graph.links)
+      .id(d => d.id)
+      .distance(80))
+    .force("charge", d3.forceManyBody().strength(-120))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    // keep things roughly in the middle
+    .force("x", d3.forceX(width / 2).strength(0.05))
+    .force("y", d3.forceY(height / 2).strength(0.05));
+
+  // Links (edges)
+  const link = svg.append("g")
+    .attr("stroke", "#aaa")
+    .attr("stroke-width", 1)
+    .selectAll("line")
+    .data(graph.links)
+    .enter()
+    .append("line");
+
+  // Nodes (circles + labels)
+  const node = svg.append("g")
+    .selectAll("g")
+    .data(graph.nodes)
+    .enter()
+    .append("g")
+    .call(d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended));
+
+  node.append("circle")
+    .attr("r", 8)
+    .attr("fill", d => color(d.type));
+
+  node.append("title")
+    .text(d => d.label);
+
+  node.append("text")
+    .attr("x", 10)
+    .attr("y", 3)
+    .attr("fill", "#ffffff")
+    .attr("font-size", "10px")
+    .text(d => d.label);
+
+  simulation.on("tick", () => {
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+
+    node
+      .attr("transform", d => `translate(${d.x},${d.y})`);
+  });
+
+  function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
   }
 
-
-//visualisation
-
-  // ---- Draw force-directed graph with D3 ----
-  function drawGraphFromSparql(data) {
-    const graph = buildGraphFromSparql(data);
-
-    const svg = d3.select("#graph");
-    svg.selectAll("*").remove(); // clear old graph
-
-    const width = +svg.attr("width");
-    const height = +svg.attr("height");
-
-    const color = d3.scaleOrdinal()
-      .domain(["drug", "atc"])
-      .range(["#ffcc00", "#66ccff"]);
-
-    const simulation = d3.forceSimulation(graph.nodes)
-      .force("link", d3.forceLink(graph.links)
-        .id(d => d.id)
-        .distance(10))
-      .force("charge", d3.forceManyBody().strength(-40))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-  // NEW: gently pull every node towards the middle
-  .force("x", d3.forceX(width / 2).strength(0.05))
-  .force("y", d3.forceY(height / 2).strength(0.05));
-
-    const link = svg.append("g")
-      .attr("stroke", "#aaa")
-      .attr("stroke-width", 1.2)
-      .selectAll("line")
-      .data(graph.links)
-      .enter().append("line");
-
-    const node = svg.append("g")
-      .selectAll("circle")
-      .data(graph.nodes)
-      .enter().append("circle")
-        .attr("r", 8)
-        .attr("fill", d => color(d.type))
-        .call(
-          d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended)
-        );
-
-    const label = svg.append("g")
-      .selectAll("text")
-      .data(graph.nodes)
-      .enter().append("text")
-        .attr("font-size", 10)
-        .attr("fill", "white")
-        .attr("dx", 10)
-        .attr("dy", 4)
-        .text(d => d.label);
-
-    simulation.on("tick", () => {
-      link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
-
-      node
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
-
-      label
-        .attr("x", d => d.x)
-        .attr("y", d => d.y);
-    });
-
-    function dragstarted(event, d) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
-      d.fx = d.x;
-      d.fy = d.y;
-    }
-
-    function dragged(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
-    }
-
-    function dragended(event, d) {
-      if (!event.active) simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
-    }
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
   }
+
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+}
+
+//add bar graph for binding activities
+
+
 
   document.getElementById('run').addEventListener('click', runSparql);
 </script>
+
+<div class="grid-container">
+  <div class="item">title </div>
+  <div class="item">sidebar </div>
+  <div class="item">content </div>
+  <div class="item">footer </div>
 
 </body>
 </html>

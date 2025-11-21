@@ -8,17 +8,18 @@ body {
 h1 {
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS';
   font-size: 40px;
-  color: rgb(79, 248, 147);
+  color: rgb(66, 229, 131);
   text-align: center; 
+  text-shadow: 0px 0px 25px  rgb(79, 248, 147); 
 }
 
 h2 {
-  color: white;
+  color: rgb(131, 252, 179);
   margin-top: 30px;
 }
 
 h3 {
-  color: white;
+  color: rgb(79, 248, 147);
 }
 
 p {
@@ -121,4 +122,31 @@ img{
   max-width: 800px;
   margin-left: 100px;
   margin-right: 50px;
+}
+
+/* trying to make a grid */
+.grid-container{
+  height: 100%;
+  display: grid;
+  grid-gap: 20px 20 px;
+
+  grid-template-areas:"header header"
+                      "content sidebar"
+                      "footer footer";
+}
+
+#header {
+  grid-area:header;
+}
+
+#content {
+  grid-area:content;
+}
+
+#sidebar {
+  grid-area:sidebar;
+}
+
+#footer{
+  grid-area:footer;
 }
