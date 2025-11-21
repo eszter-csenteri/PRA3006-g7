@@ -39,16 +39,16 @@
         </a>
 
         <br><br>
-<!--sidebar ah-->
-        <p style="color: white;">
+<!--sidebar ahh-->
+        <p>
             <img src="https://pubs.acs.org/cms/10.1021/acscentsci.3c01050/asset/images/large/oc3c01050_0001.jpeg"
                  alt="Radiopharmaceuticals diagram" height="200">
             Radiopharmaceuticals, or medicinal radiocompounds, are a group of pharmaceutical drugs containing radioactive isotopes. Radiopharmaceuticals can be used as diagnostic and therapeutic agents. Radiopharmaceuticals emit radiation themselves, which is different from contrast media which absorb or alter external electromagnetism or ultrasound.
         </p>
 
-        <strong style="color:white;">Summarised desired properties of radiopharmaceuticals:</strong>
+        <h3>Summarised desired properties of radiopharmaceuticals:</h3>
 
-        <ul style="color:white;">
+        <ul>
             <li>Low binding inhibition constant (Ki)</li>
             <li>Low dissociation constants (Kd &lt; 10 nM)</li>
             <li>Slow but reversible off-rates</li>
@@ -58,7 +58,7 @@
         </ul>
 
         <hr>
-        <div class="box" style="color:white;"> Research question: Which targets do radiopharmaceuticals bind to?</div>
+        <div class="box"> Research question: Which targets do radiopharmaceuticals bind to?</div>
 
         
 
@@ -71,33 +71,57 @@
               .style("color", "green");
         </script>
 
-        <div class="section" style="color:rgb(42, 217, 68); padding-top: 50px; padding-right: 20px;">
+        <div class="section">
             <h2>SPARQL Explorer</h2>
 
             <label for="endpoint">Endpoint URL:</label><br>
-            <input id="endpoint" type="text" value="https://bio2rdf.org/sparql"><br><br>
+            <input id="endpoint" type="text" value="https://chemblmirror.rdf.bigcat-bioinformatics.org/sparql"><br><br>
 <!--query implementation in website here-->
             <label for="query">SPARQL Query:</label><br>
             <textarea id="query" rows="8" style="width:100%;">
-PREFIX rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
-PREFIX dct:     &lt;http://purl.org/dc/terms/&gt;
-PREFIX pharmgkb:&lt;http://bio2rdf.org/pharmgkb_vocabulary:&gt;
+PREFIX cco:   <http://rdf.ebi.ac.uk/terms/chembl#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
 
 SELECT DISTINCT
-  ?drug
-  ?drugLabel
-  ?atc
-  ?atcID
+  ?molecule
+  ?molName
+  ?atcCode
+  ?molecule2
+  ?mol2Name
+  ?target
+  ?targetName
+  ?assay
+  ?assayName
+  ?type
+  ?value
 WHERE {
-  ?drug pharmgkb:x-atc ?atc .
-  ?drug rdfs:label ?drugLabel .
-  ?atc  dct:identifier ?atcID .
 
-  FILTER (
-    STRSTARTS(STR(?atc), "http://bio2rdf.org/atc:V09") ||
-    STRSTARTS(STR(?atc), "http://bio2rdf.org/atc:V10")
-  )
+  # Radiopharmaceutical small molecules
+  ?molecule a cco:SmallMolecule ;
+            rdfs:label ?molName ;
+            cco:atcClassification ?atcCode ;
+            cco:hasParentMolecule ?molecule2 .
+
+  FILTER(STRSTARTS(?atcCode, "V09") || STRSTARTS(?atcCode, "V10"))
+
+  # Parent molecule label
+  ?molecule2 rdfs:label ?mol2Name .
+
+  ### --- Binding assays for molecule2 --- ###
+  ?activity cco:hasMolecule ?molecule2 ;
+            cco:hasAssay ?assay ;
+            cco:type ?type ;
+            cco:standardValue ?value .
+
+  # Assay and target
+  ?assay rdfs:label ?assayName ;
+         cco:hasTarget ?target .
+
+  ?target rdfs:label ?targetName .
 }
+LIMIT 200
+
 
             </textarea><br>
 
@@ -122,7 +146,7 @@ function renderResults(data) {
 
   // "bindings" contains all result rows from the SPARQL endpoint.
   // Example structure: data.results.bindings = [{ var1:{value:".."}, var2:{value:".."} }, ...]
-  const bindings = data.results?.bindings;
+  const molecule = data.results?.molecule;
 
   // If no results, return simple message.
   if (!bindings || bindings.length === 0) return '<p>No results.</p>'; //in case there are no bindings
@@ -268,6 +292,9 @@ async function runSparql() {
       const drugLabel = row.drugLabel?.value || drugURI;
       const atcURI    = row.atc?.value;
       const atcID     = row.atcID?.value || atcURI;
+//add constant depending on if we change the query so the visualisation works after.!
+
+
 
 //since sparql querry are catagorised in a way such that {
  // "drug":      { "type": "uri", "value": "http://example/drug/123" },
@@ -278,17 +305,22 @@ async function runSparql() {
 
 
 
-      if (!drugURI || !atcURI) return;
+      if (!drugURI || !atcURI) return; // || means or; !drugURI --> if drug uri is missing then stop the function 
 
-      const drugNode = addNode(drugURI, drugLabel, "drug");
-      const atcNode  = addNode(atcURI,  atcID,     "atc");
 
-      links.push({
+//node field : 
+// id : drug uri
+//label : readable names 
+//type : drugs
+      const drugNode = addNode(drugURI, drugLabel, "drug"); //adding nodes for dryg
+      const atcNode  = addNode(atcURI,  atcID,     "atc");//atc nodes
+
+      links.push({ //adding a link between the drug and atxc code, create a D3 compatible link
         source: drugNode.id,
         target: atcNode.id
       });
     });
-
+//due to this only a few are connected?
 //alo
 
 
@@ -297,6 +329,9 @@ async function runSparql() {
       links: links
     };
   }
+
+
+//visualisation
 
   // ---- Draw force-directed graph with D3 ----
   function drawGraphFromSparql(data) {

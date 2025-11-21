@@ -1,15 +1,15 @@
 body {
-  background-color: rgb(17, 29, 44);
+  background-color: rgb(19, 40, 66);
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin: 0;
   padding: 0;
 }
 
 h1 {
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS';
   font-size: 40px;
-  color: lightgreen;
-  text-align: center;
+  color: rgb(79, 248, 147);
+  text-align: center; 
 }
 
 h2 {
@@ -17,10 +17,19 @@ h2 {
   margin-top: 30px;
 }
 
+h3 {
+  color: white;
+}
+
 p {
   color: white;
   font-size: 18px;
   line-height: 1.6;
+}
+
+
+ul {
+  color: white;
 }
 
 img{
@@ -34,7 +43,13 @@ img{
     border: 1px solid;
     font-size: 20px;
     text-align: center;
-    color: yellow;
+    color: white;
+}
+
+.section{
+  color: #39FF14;
+  padding-top: 50px;
+  padding-right: 20px;
 }
 
 .sidebar{
@@ -43,7 +58,7 @@ img{
     top : 0;
     width : 200px;
     height : 100vh;
-    background: #222;
+    background: #121b29;
     padding-top : 30px
 }
 
@@ -87,7 +102,7 @@ img{
 .sidebar a {
   color: rgb(0, 255, 153);
   text-decoration: none;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .layout {

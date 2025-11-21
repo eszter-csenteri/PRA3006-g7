@@ -1,85 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>About Us</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tonight's Menu - Fine Dining</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #f9f5f0;
+      color: #333;
+      margin: 0;
+      padding: 40px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #8B4513;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      margin: 40px 0;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .menu-item img {
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      max-width: 100%;
+      height: auto;
+    }
+    .dish-name {
+      font-size: 1.8em;
+      font-style: italic;
+      color: #5D4037;
+      margin: 0;
+    }
+    .emojis {
+      text-align: center;
+      font-size: 2em;
+      margin: 40px 0;
+    }
+    .visualizations {
+      margin-top: 60px;
+    }
+    .chart-title {
+      text-align: center;
+      font-size: 1.4em;
+      margin: 40px 0 20px;
+      color: #6D4C41;
+    }
+    svg {
+      display: block;
+      margin: 0 auto;
+      background: #fff8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .circle-art circle {
+      stroke: white;
+      stroke-width: 3;
+    }
+  </style>
 </head>
 <body>
 
-<div class="content-wrapper">
-    <h1>Tonights menu : </h1>
-    <p>Confit de canard</p>
-    <img src="https://i.imgur.com/ADnpkaD.jpeg" alt="Confit du canard" height="200">
-    <p>Gratin dauphinois </p>
-    <img src="https://i.imgur.com/CbqHejZ.jpeg" alt="Gratin dauphinois" height="300">
+<div class="container">
+  <h1>Tonight's Menu</h1>
+
+  <div class="menu-item">
+    <div>
+      <p class="dish-name">Confit de Canard</p>
+      <p>Tender duck leg slow-cooked in its own fat, served with herbs and garlic</p>
+    </div>
+    <img src="https://i.imgur.com/ADnpkaD.jpeg" alt="Confit de Canard" width="350">
+  </div>
+
+  <div class="menu-item" style="flex-direction: row-reverse;">
+    <div style="text-align: right;">
+      <p class="dish-name">Gratin Dauphinois</p>
+      <p>Creamy layered potatoes baked with garlic and Gruyère cheese</p>
+    </div>
+    <img src="https://i.imgur.com/CbqHejZ.jpeg" alt="Gratin Dauphinois" width="400">
+  </div>
+
+  <div class="emojis">
+    😭 🙏 💘 🥔
+  </div>
+
+  <div class="visualizations">
+
+    <h2 class="chart-title">A Little Decorative Art with D3</h2>
+    <svg id="decorative-circles" width="500" height="180" class="circle-art"></svg>
+
+    <h2 class="chart-title">Simple Scatter Plot Example</h2>
+    <svg id="scatter-plot" width="500" height="450"></svg>
+
+  </div>
 </div>
-<p>&#128557; &#128591; &#128148; &#129344;</p>
 
-<svg id="dataviz_area" height=200 width=450></svg>
-<script src="https://d3js.org/d3.v4.js"></script>
 <script>
-// Create a scale: transform value in pixel
-var x = d3.scaleLinear()
-    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-    .range([0, 400]);       // This is the corresponding value I want in Pixel
-// Try console.log( x(25) ) to see what this x function does.
+  // Decorative floating circles
+  const decor = d3.select("#decorative-circles");
+  const colors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FECA57"];
 
-    d3
-  .select(".target")  // select the elements that have the class 'target'
-  .style("stroke-width", 5) // change their style: stroke width is not equal to 8 pixels
-var svg = d3.select("#dataviz_area")
-svg.append("circle")
-  .attr("cx", 100).attr("cy", 50).attr("r", 33).style("fill", "blue");
-svg.append("circle")
-  .attr("cx", 140).attr("cy", 70).attr("r", 33).style("fill", "red");
-svg.append("circle")
-  .attr("cx", 300).attr("cy", 100).attr("r", 33).style("fill", "green");
+  decor.selectAll("circle")
+    .data([
+      {cx: 100, cy: 80, r: 40},
+      {cx: 180, cy: 60, r: 30},
+      {cx: 300, cy: 90, r: 50},
+      {cx: 420, cy: 70, r: 35}
+    ])
+    .join("circle")
+      .attr("cx", d => d.cx)
+      .attr("cy", d => d.cy)
+      .attr("r", d => d.r)
+      .attr("fill", (_, i) => colors[i % colors.length])
+      .attr("opacity", 0.8);
+
+  // Scatter plot
+  const margin = {top: 40, right: 40, bottom: 50, left: 60};
+  const width = 500 - margin.left - margin.right;
+  const height = 450 - margin.top - margin.bottom;
+
+  const svg = d3.select("#scatter-plot")
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  const data = [
+    {x: 10, y: 20},
+    {x: 40, y: 90},
+    {x: 80, y: 50},
+    {x: 60, y: 70},
+    {x: 30, y: 45}
+  ];
+
+  const xScale = d3.scaleLinear()
+    .domain([0, 100])
+    .range([0, width]);
+
+  const yScale = d3.scaleLinear()
+    .domain([0, 100])
+    .range([height, 0]);
+
+  // Axes
+  svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale).ticks(6));
+
+  svg.append("g")
+    .call(d3.axisLeft(yScale).ticks(6));
+
+  // Axis labels
+  svg.append("text")
+    .attr("text-anchor", "middle")
+    .attr("x", width / 2)
+    .attr("y", height + 40)
+    .text("Deliciousness Level");
+
+  svg.append("text")
+    .attr("text-anchor", "middle")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -50)
+    .attr("x", -height / 2)
+    .text("Preparation Time (arbitrary units)");
+
+  // Dots
+  svg.selectAll("circle")
+    .data(data)
+    .join("circle")
+      .attr("cx", d => xScale(d.x))
+      .attr("cy", d => yScale(d.y))
+      .attr("r", 10)
+      .attr("fill", "#8B4513")
+      .attr("stroke", "#5D4037")
+      .attr("stroke-width", 2)
+      .style("cursor", "pointer")
+    .on("mouseover", function() {
+      d3.select(this).attr("r", 14);
+    })
+    .on("mouseout", function() {
+      d3.select(this).attr("r", 10);
+    });
 </script>
-<div id="scatter_area"></div>
-<script>
-    // set the dimensions and margins of the graph
-var margin = {top: 10, right: 40, bottom: 30, left: 30},
-    width = 450 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
-var svG = d3.select("#scatter_area")
-  .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-// Create data
-var data = [ {x:10, y:20}, {x:40, y:90}, {x:80, y:50} ]
-
-// X scale and Axis
-var x = d3.scaleLinear()
-    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-    .range([0, width]);       // This is the corresponding value I want in Pixel
-svG
-  .append('g')
-  .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(x));
-
-// X scale and Axis
-var y = d3.scaleLinear()
-    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-    .range([height, 0]);       // This is the corresponding value I want in Pixel
-svG
-  .append('g')
-  .call(d3.axisLeft(y));
-
-// Add 3 dots for 0, 50 and 100%
-svG
-  .selectAll("whatever")
-  .data(data)
-  .enter()
-  .append("circle")
-    .attr("cx", function(d){ return x(d.x) })
-    .attr("cy", function(d){ return y(d.y) })
-    .attr("r", 7)
-</script>
 </body>
 </html>
