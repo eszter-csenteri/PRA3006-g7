@@ -34,6 +34,9 @@ ul {
   line-height: 30px;
 }
 
+i {
+  color: white
+}
 img{
     float: right;
     margin-left: 10px;
@@ -131,4 +134,12 @@ img{
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+}
+
+.item-2 {
+  width: 400px;
+}
+
+.item-3 {
+  width: 400px;
 }
