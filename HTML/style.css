@@ -136,4 +136,6 @@ img{
   margin: 10px;
   padding: 20px;
   font-size: 24px;
+  box-shadow: 10px 10px 5px lightblue inset;
+  /* border-radius makes the edges round */
 }

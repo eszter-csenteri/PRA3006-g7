@@ -713,6 +713,8 @@ LIMIT 500
 
           // ---------- BUTTON WIRING ----------
           document.getElementById('run').addEventListener('click', runSparql);
+          renderResults({});
+          renderResults(data);
           runSparql();
         </script>
 
