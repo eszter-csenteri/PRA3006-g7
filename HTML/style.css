@@ -6,12 +6,13 @@ body {
 }
 
 h1 {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS';
+  font-family: "EB Garamond", serif;
   font-size: 40px;
   color: rgb(66, 229, 131);
-  text-align: center; 
-  text-shadow: 0px 0px 25px  rgb(79, 248, 147); 
+  text-align: center;
+  text-shadow: 0px 0px 25px rgb(79, 248, 147);
 }
+
 
 h2 {
   color: rgb(131, 252, 179);
@@ -20,6 +21,14 @@ h2 {
 
 h3 {
   color: rgb(79, 248, 147);
+}
+
+h5 {
+  text-align: center;
+}
+
+h6 {
+  text-align: center;
 }
 
 p {
@@ -130,14 +139,25 @@ img{
 }
 
 .container div {
-  background-color: #f1f1f1;
-  border-radius: 25px;
-  /* border-radius makes the edges round */
   margin: 10px;
   padding: 20px;
   font-size: 24px;
-  box-shadow: 0px 0px 10px rgb(0, 255, 153);
   /* this gives the shadow to the boxes */
   /* if you write inset after the shadow will be on the inside of the box */
 }
 
+.container div:nth-child(1){
+  color: white;
+  width: 100%;
+  font-size: 20px;
+}
+
+.container div:nth-child(n+2){
+    background-color: #f1f1f1;
+    margin: 10px;
+    padding: 20px;
+    width: 20%;
+    border-radius: 25px;
+    box-shadow: 0px 0px 10px rgb(0, 255, 153);
+  /* border-radius makes the edges round */
+}

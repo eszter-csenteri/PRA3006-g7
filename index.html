@@ -2,13 +2,17 @@
 <html lang="en">
 
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Radiopharmaceuticals 🧠</title>
 
   <!-- CSS -->
   <link rel="stylesheet" href="HTML/style.css">
-
+  <style>
+    /* Hide the entire SPARQL editor UI – keeps functionality but removes it visually */
+    #sparqlEditor { display: none !important; }
+  </style>
   <!-- D3 -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
@@ -22,7 +26,7 @@
     <!-- LEFT SIDEBAR -->
     <nav class="sidebar">
       <ul>
-        <li><a href="index.html">Home</a></li>
+        <li><a href="HTML/introPage.html">Home</a></li>
         <li><a href="HTML/about.html">Author</a></li>
         <li><a href="HTML/Dishes.html">Dishes</a></li>
         <li><a href="HTML/sparql.html"> SPARQL</a></li>
@@ -30,7 +34,7 @@
     </nav>
 
     <div class="content-wrapper">
-      <h1>Radiopharmaceuticals</h1>
+      <h1>RADIOPHARMACEUTICALS</h1>
       <h2 style="text-align:center;">Exploring protein targets visually</h2>
 
       <h2>What are radiopharmaceuticals?</h2>
@@ -46,8 +50,12 @@
       <p>
         <img src="https://pubs.acs.org/cms/10.1021/acscentsci.3c01050/asset/images/large/oc3c01050_0001.jpeg"
           alt="Radiopharmaceuticals diagram" height="200">
+          <img src="Other/pet2.gif" height="200">
+          
         Radiopharmaceuticals, or medicinal radiocompounds, are a group of pharmaceutical drugs containing radioactive
         isotopes...
+        
+        <br><br><br><br>
       </p>
 
       <h3>Summarised desired properties of radiopharmaceuticals:</h3>
@@ -62,8 +70,10 @@
 
       <hr>
       <div class="box">
-        Research question: Which receptors are most commonly targeted by radiopharmaceuticals, and how do their binding
-        selectivity profiles vary?
+        <h3>Research question:</h3>
+        <p> Which receptors are most commonly targeted by radiopharmaceuticals, and how do their binding
+        selectivity profiles vary?</p>
+        
       </div>
 
       <h2>How were protein targets determined?</h2>
@@ -71,15 +81,7 @@
 
       <p>When looking for radiopharmaceuticals linked to their relevant receptors, only ...</p>
       <hr style="height:5px; background-color: white;">
-      <h2>SPARQL Explorer</h2>
-      <h3>Instructions:</h3>
-      <ul>
-        <li>Enter the SPARQL endpoint URL (default is set to ChEMBL mirror)</li>
-        <li>Enter your SPARQL query in the text area (a default query is provided)</li>
-        <li>Click the "Run Query" button to execute the query</li>
-        <li>View the results in the "Results" section below the button</li>
-        <li>The knowledge graph visualization will be displayed in the SVG area below the results</li>
-      </ul>
+      
       <script>
         console.log("D3 version:", d3.version);
       </script>
@@ -158,7 +160,7 @@ LIMIT 500
       </textarea><br>
 
         <button id="run" style="background-color:#04AA6D; color:white; padding:5px 10px; border:none; cursor:pointer;">
-          Run Query
+          Run Query 
         </button>
 
         <!-- VIEW SELECTOR -->
@@ -174,11 +176,11 @@ LIMIT 500
         <div id="tableContainer" style="margin-top:20px; color:white;">
           <div id="results"></div>
         </div>
-
+    
         <!-- GRAPH RESULTS -->
         <div id="graphContainer" style="display:none; margin-top:20px;">
           <h2 style="color:white;">Knowledge graph</h2>
-          <svg id="graph" width="1000" height="1000" style="background:#102030;"></svg>
+          <svg id="graph" width="850" height="800" style="background:#102030;"></svg>
         </div>
 
         <!-- CHART RESULTS -->

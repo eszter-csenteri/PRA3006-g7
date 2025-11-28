@@ -22,7 +22,8 @@
     <!-- LEFT SIDEBAR -->
     <nav class="sidebar">
       <ul>
-        <li><a href="../index.html">Home</a></li>
+        <!-- "../" means go back up one directory level"-->
+        <li><a href="introPage.html">Home</a></li>
         <li><a href="HTML/about.html">Author</a></li>
         <li><a href="HTML/Dishes.html">Dishes</a></li>
         <li><a href="HTML/sparql.html"> SPARQL</a></li>
@@ -138,7 +139,7 @@ LIMIT 500
         <!-- GRAPH RESULTS -->
         <div id="graphContainer" style="display:none; margin-top:20px;">
           <h2 style="color:white;">Knowledge graph</h2>
-          <svg id="graph" width="1000" height="1000" style="background:#102030;"></svg>
+          <svg id="graph" width="850" height="700" style="background:#102030;"></svg>
         </div>
 
         <!-- CHART RESULTS -->
@@ -673,6 +674,8 @@ LIMIT 500
 
           // ---------- BUTTON WIRING ----------
           document.getElementById('run').addEventListener('click', runSparql);
+
+          
         </script>
 
 </body>
