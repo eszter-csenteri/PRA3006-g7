@@ -713,15 +713,14 @@ LIMIT 500
 
           // ---------- BUTTON WIRING ----------
           document.getElementById('run').addEventListener('click', runSparql);
+
           window.addEventListener('load', async () => {
-            await runSparql();                  // Execute the SPARQL query immediately
-        // After results are loaded, switch to graph view
+            await runSparql(); // fetches data + draws graph automatically
+
             const viewSelector = document.getElementById("viewSelector");
-            viewSelector.value = "Knowledge Graph";       // Select "Knowledge Graph" in dropdown
-            document.getElementById("tableContainer").style.display = "none";
-            document.getElementById("graphContainer").style.display = "block";
-            document.getElementById("chartContainer").style.display = "none";
-      });
+            viewSelector.value = "graph";                // correct value
+            viewSelector.dispatchEvent(new Event('change'));  // triggers your view switcher
+          });
         </script>
 
 </body>
