@@ -188,17 +188,17 @@ a {
   margin: 10px;
   padding: 20px;
   font-size: 24px;
-  /* this gives the shadow to the boxes */
-  /* if you write inset after the shadow will be on the inside of the box */
 }
 
 .container div:nth-child(1){
+  /* this only applies to the first box with the intro text */
   color: white;
   width: 100%;
   font-size: 20px;
 }
 
 .container div:nth-child(n+2){
+  /* this is for all the boxes with the authors */
     background-color: #f1f1f1;
     margin: 10px;
     padding: 20px;
