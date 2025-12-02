@@ -132,9 +132,9 @@
         <!-- SPARQL QUERY -->
         <label for="query">SPARQL Query:</label><br>
         <textarea id="query" rows="8" style="width:100%;">
-PREFIX cco:   <http://rdf.ebi.ac.uk/terms/chembl#> <!--ChEMBL ontology for information on molecules, assays, etc.-->
-PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#> <!--For human-readable labels-->
-PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#> <!--For numeric data-->
+PREFIX cco:   <http://rdf.ebi.ac.uk/terms/chembl#> 
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#> 
 
 SELECT DISTINCT
   ?molecule           # radiopharmaceutical child
@@ -151,14 +151,14 @@ WHERE {
 
   ######## Radiopharmaceutical and parent molecule ########
 
-  ?molecule a cco:SmallMolecule ; <!--Molecule is a small molecule-->
-            rdfs:label ?molName ; <!--Get human-readable name-->
-            cco:atcClassification ?atcCode ; <!--ATC code to filter for V09 and V10-->
-            cco:hasParentMolecule ?molecule2 . <!--Links to nonradioactive molecule-->
+  ?molecule a cco:SmallMolecule ; 
+            rdfs:label ?molName ; 
+            cco:atcClassification ?atcCode ; 
+            cco:hasParentMolecule ?molecule2 . 
 
   FILTER(STRSTARTS(STR(?atcCode), "V09") || STRSTARTS(STR(?atcCode), "V10"))
 
-  ?molecule2 rdfs:label ?mol2Name . <!--Gets label of parent molecule-->
+  ?molecule2 rdfs:label ?mol2Name . 
 
   ######## Per-target Ki for each parent molecule (molecule2) ########
 
@@ -167,23 +167,23 @@ WHERE {
     WHERE {
       ?activity  cco:hasMolecule ?molecule2 ;
                  cco:hasAssay    ?assay ;
-                 cco:type        ?type ; <!--Activity type (Ki, IC50, EC50, etc.)-->
-                 cco:standardValue ?value . <!-- Numerical activity value-->
+                 cco:type        ?type ; 
+                 cco:standardValue ?value .
 
-      ?assay cco:hasTarget ?target . <!--The assay links to its biological target-->
-      ?target rdfs:label ?targetName . <!-- Get target label-->
+      ?assay cco:hasTarget ?target . 
+      ?target rdfs:label ?targetName . 
 
-      FILTER(?type = "Ki") <!-- Keep only Ki values-->
+      FILTER(?type = "Ki") 
     }
     GROUP BY ?molecule2 ?target ?targetName
   }
 
-  ######## Best Ki per molecule2 ######## <!--Computes best Ki overall to define primary target-->
+  ######## Best Ki per molecule2 ######## 
 
   {
     SELECT ?molecule2 (MIN(xsd:decimal(?valueBest)) AS ?KiBest)
     WHERE {
-      ?activityBest  cco:hasMolecule ?molecule2 ; <!-- Links molecule to assay and provides activity type + numerical value-->
+      ?activityBest  cco:hasMolecule ?molecule2 ; 
                      cco:hasAssay    ?assayBest ;
                      cco:type        ?typeBest ;
                      cco:standardValue ?valueBest .
@@ -194,7 +194,6 @@ WHERE {
 }
 ORDER BY ?molecule2 ?Selectivity_vs_best
 
-LIMIT 500
       </textarea><br>
 
         <button id="run" style="background-color:#04AA6D; color:white; padding:5px 10px; border:none; cursor:pointer;">
