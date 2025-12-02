@@ -1,0 +1,211 @@
+body {
+  background-color: rgb(19, 40, 66);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-family: "EB Garamond", serif;
+  font-size: 64px;
+  font-weight: 600;
+  letter-spacing: 3px;
+
+  text-align: center;
+  color: #8fffd0;
+
+  /* subtle glow instead of a big blur */
+  text-shadow: 0px 3px 12px rgba(255, 255, 255, 0.35);
+
+  /* spacing */
+  margin-top: 60px;
+  margin-bottom: 0px;
+}
+
+
+h2 {
+  font-family: "EB Garamond", serif;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-top: 80px;
+  margin-bottom: 20px;
+  color: #8fffd0;
+}
+
+h3 {
+  font-family: "EB Garamond", serif;
+  font-size: 26px;
+  font-style: italic;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  color: #9ef7bf;
+}
+
+h4 {
+  font-family: "EB Garamond", serif;
+  font-size: 26px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: #9ef7bf;
+}
+
+
+body {
+  font-family: "Inter", sans-serif;
+  font-size: 19px;
+  line-height: 1.65;
+  letter-spacing: 0.2px;
+  color: #d8e6e7;
+}
+
+h5 {
+  color: #121b29;
+}
+
+h6 {
+  color: #121b29;
+}
+
+.section-divider {
+  margin: 28px 0 32px 0;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Paragraphs */
+p {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  max-width: 85%;
+}
+
+/* Links */
+a {
+  color: #8fffd0;
+  text-decoration: underline;
+}
+
+/* Images inside text sections */
+.text-images {
+  display: flex;
+  gap: 20px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+.text-images img {
+  width: 48%;
+  border-radius: 4px;
+}
+
+.section{
+  color: #39FF14;
+  padding-top: 50px;
+  padding-right: 20px;
+}
+
+.sidebar{
+    position: fixed;
+    left : 0;
+    top : 0;
+    width : 200px;
+    height : 100vh;
+    background: #121b29;
+    padding-top : 30px
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar li {
+  margin: 20px 0;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  display: block;
+}
+
+.sidebar a:hover {
+  background: #444;
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.sidebar li {
+  margin: 10px 0;
+}
+
+.sidebar a {
+  color: rgb(0, 255, 153);
+  text-decoration: none;
+  font-size: 22px;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+}
+
+.sidebar {
+  width: 170px;
+  position: sticky;
+  top: 0px;
+  padding-right: 0;
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin-left: 100px;
+  margin-right: 50px;
+}
+
+/* here I try the flex thingy */
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  background-color: rgb(19, 40, 66);
+}
+
+.container div {
+  margin: 10px;
+  padding: 20px;
+  font-size: 24px;
+  /* this gives the shadow to the boxes */
+  /* if you write inset after the shadow will be on the inside of the box */
+}
+
+.container div:nth-child(1){
+  color: white;
+  width: 100%;
+  font-size: 20px;
+}
+
+.container div:nth-child(n+2){
+    background-color: #f1f1f1;
+    margin: 10px;
+    padding: 20px;
+    width: 20%;
+    border-radius: 25px;
+    /* border-radius makes the edges round */
+    box-shadow: 0px 0px 10px rgb(0, 255, 153);
+    /* this gives the shadow to the boxes */
+    /* if you write inset after the shadow will be on the inside of the box */
+}

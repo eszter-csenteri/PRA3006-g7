@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('style.css');
+        /* Simple fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="h-screen w-full overflow-hidden bg-gray-900 relative">
+
+    <!-- Background Image Container -->
+    <!-- 
+      I added an onerror handler here. If 'PlaceholderImage.jpeg' isn't found, 
+      it loads a high-quality placeholder from Unsplash so the preview looks good.
+    -->
+    <div class="absolute inset-0 z-0">
+        <img 
+            src="Other/pet2.gif" 
+            onerror="this.src='https://www.slicer.org/w/img_auth.php/archive/8/81/20100606020105%21PET-CT.gif'"
+            alt="Background" 
+            class="w-full h-full object-cover"
+        >
+        <!-- Dark overlay to ensure text is readable -->
+        <div class="absolute inset-0 bg-black/50"></div>
+    </div>
+
+    <!-- Centered Content -->
+    <div class="relative z-10 h-full flex flex-col items-center justify-center px-4">
+        
+        <h1 class="text-white text-5xl md:text-7xl font-bold mb-10 text-center drop-shadow-xl animate-fade-in">
+            Welcome to the <br> Radiopharmaceuticals Explorer™
+        </h1>
+
+        <button 
+            onclick="window.location.href='../index.html';"
+            class="bg-green-600 hover:bg-green-400 text-white font-semibold text-xl py-3 px-12 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-blue-500/50 animate-fade-in"
+            style="animation-delay: 0.3s; opacity: 0;"
+        >
+            Go!
+        </button>
+
+    </div>
+
+</body>
+</html>
