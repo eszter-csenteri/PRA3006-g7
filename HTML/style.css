@@ -59,7 +59,13 @@ body {
   color: #d8e6e7;
 }
 
+h5 {
+  color: #121b29;
+}
 
+h6 {
+  color: #121b29;
+}
 
 .section-divider {
   margin: 28px 0 32px 0;
@@ -198,6 +204,8 @@ a {
     padding: 20px;
     width: 20%;
     border-radius: 25px;
+    /* border-radius makes the edges round */
     box-shadow: 0px 0px 10px rgb(0, 255, 153);
-  /* border-radius makes the edges round */
+    /* this gives the shadow to the boxes */
+    /* if you write inset after the shadow will be on the inside of the box */
 }
