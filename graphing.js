@@ -2,7 +2,7 @@
 let lastSparqlData = null;
 
 // Keeps track of whether the chart uses linear or logarithmic scale
-let currentScaleType = "linear"; // can be: "linear" or "log"
+let currentScaleType = "log"; // can be: "linear" or "log"
 
 
 //Converts SPARQL JSON results into an HTML <table>
