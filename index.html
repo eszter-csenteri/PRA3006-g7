@@ -33,7 +33,7 @@
 
     <div class="content-wrapper">
       <h1>RADIOPHARMACEUTICALS</h1>
-      <h2 style="text-align:center;">Exploring protein targets visually</h2>
+      <h4 style="text-align:center;">Exploring protein targets visually</h4>
 
       <h2>What are radiopharmaceuticals?</h2>
       <hr>
@@ -50,8 +50,8 @@
           alt="Radiopharmaceuticals diagram" height="200">
           <img src="Other/pet2.gif" height="200">
           
-        Radiopharmaceuticals, or medicinal radiocompounds, are a group of pharmaceutical drugs containing radioactive
-        isotopes... they can be used in treatment or in diagnostics frzudtrduzuiuuiuuipuift
+        Radiopharmaceuticals are a group of drugs consisting of radioactive isotopes and tracers that emit radiation and allow doctors to see where an atom goes in the body and how it behaves. The process of replacing atoms with a radioactive atom is called radiolabeling. There are different ways to produce radiopharmaceuticals, including radionuclide generators, cyclotrons, and nuclear reactors. 
+
         
         <br><br><br><br>
       </p>
@@ -81,8 +81,7 @@
 </p>
 
 <p>
-  Primary targets were defined as the proteins with the lowest <em>K<sub>i</sub></em> (best binding).<br>
-  Secondary, or off-targets, were defined as proteins with higher <em>K<sub>i</sub></em>.
+  Primary targets were defined as the proteins with the lowest <em>K<sub>i</sub></em> (best binding). Secondary, or off-targets, were defined as proteins with higher <em>K<sub>i</sub></em>.
 </p>
 
 <h3>How was target selectivity quantified?</h3>
@@ -123,42 +122,8 @@
     </tr>
   </tbody>
 </table>
-
-      </div>
-  <h2>Results</h2>
-<p>
-  The knowledge graph was used to visualize relationships between radiopharmaceuticals (yellow nodes), 
-  their parent molecules (blue nodes), and the protein targets (pink nodes) they bind to. 
-  The edges represent binding relationships where each parent molecule is connected to its protein targets, 
-  and each radiopharmaceutical is linked to its non-radioactive parent molecule.
-</p>
-
-<p>Some protein targets appear multiple times, connected to different parent molecules:</p>
-<ul>
-  <li>Carbonic anhydrase isoforms (I, II, IV, IX) linked to sodium iodide and sodium fluoride</li>
-  <li>Carbonic anhydrase II links sodium iodide and sodium phosphate</li>
-  <li>Beta amyloid A4 protein targeted by flutemetamol and florbetapir</li>
-</ul>
-
-<p>Others are specific to a type of protein:</p>
-<ul>
-  <li>Monoamine transporters (dopamine, serotonin, norepinephrine) linked to iodine 2β-carbomethoxy-3β-(4-iodophenyl)-tropane</li>
-  <li>Dopamine receptors (D1, D2, D3, D4) only targeted by iolopride</li>
-</ul>
-
-<p>
-  Thus, the knowledge graph shows that radiopharmaceuticals target a limited category of proteins, 
-  illustrating their selectivity for specific biological functions.
-</p>
-
-<p>
-  To visualize the target selectivity for parent molecules, we plotted log-transformed affinity values (log(1/Ki)) to emphasize the primary target, which appears as the tallest bar in the chart, and the off-targets in decreasing order. 
-</p>
-
-      
-      <hr style="height:5px; background-color: white;">
-        
-      <script>
+      <hr style="height:5px; background-color: rgb(255, 255, 255);">
+   <script>
         console.log("D3 version:", d3.version);
       </script>
 
@@ -241,7 +206,7 @@ LIMIT 500
 
         <!-- VIEW SELECTOR -->
         <br><br>
-        <label style="color:white;">View:</label>
+        <label style="color:rgb(255, 255, 255);">View:</label>
         <select id="viewSelector" style="margin-left:10px; padding:5px;">
           <option value="table">Table (Query Results)</option>
           <option value="graph">Knowledge Graph</option>
@@ -276,6 +241,43 @@ LIMIT 500
 
 
          <script src="graphing.js" ></script>  <!-- visualisation all here in js file. -->
+
+      </div>
+            <hr style="height:5px; background-color: rgb(255, 255, 255);"> 
+  <h2>Results</h2>
+<p>
+  The knowledge graph was used to visualize relationships between radiopharmaceuticals (yellow nodes), 
+  their parent molecules (blue nodes), and the protein targets (pink nodes) they bind to. 
+  The edges represent binding relationships where each parent molecule is connected to its protein targets, 
+  and each radiopharmaceutical is linked to its non-radioactive parent molecule.
+</p>
+
+<p>Some protein targets appear multiple times, connected to different parent molecules:</p>
+<ul>
+  <li>Carbonic anhydrase isoforms (I, II, IV, IX) linked to sodium iodide and sodium fluoride</li>
+  <li>Carbonic anhydrase II links sodium iodide and sodium phosphate</li>
+  <li>Beta amyloid A4 protein targeted by flutemetamol and florbetapir</li>
+</ul>
+
+<p>Others are specific to a type of protein:</p>
+<ul>
+  <li>Monoamine transporters (dopamine, serotonin, norepinephrine) linked to iodine 2β-carbomethoxy-3β-(4-iodophenyl)-tropane</li>
+  <li>Dopamine receptors (D1, D2, D3, D4) only targeted by iolopride</li>
+</ul>
+
+<p>
+  Thus, the knowledge graph shows that radiopharmaceuticals target a limited category of proteins, 
+  illustrating their selectivity for specific biological functions.
+</p>
+
+<p>
+  To visualize the target selectivity for parent molecules, we plotted log-transformed affinity values (log(1/Ki)) to emphasize the primary target, which appears as the tallest bar in the chart, and the off-targets in decreasing order. 
+</p>
+
+      
+      <hr style="height:5px; background-color: rgb(255, 255, 255);">
+        
+   
 
 </body>
 </html>
