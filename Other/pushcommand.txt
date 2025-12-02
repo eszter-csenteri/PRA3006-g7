@@ -7,23 +7,3 @@ TO PUSH TO THE GITHUB REPOSITORY
 git add .
 git commit -m "Whatever comment you want here to describe the changes"
 git push -u origin main
-  
-  OKAY GITHUB I HAD ENOUGH OF YOUR BS!!
-
-alo salad ala salad
-alo phở 
-
-this is another change, lets see if the gitgods help me.
-ALO LAM IS DEAD!!!!!!
-
-
-change alo salad
-Change 1
-
-
-Por favor Work!!!!
-[[[[]]]]
-
-
-
-SALSA Y PICANTE
