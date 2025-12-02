@@ -4,10 +4,8 @@ let lastSparqlData = null;
 // Keeps track of whether the chart uses linear or logarithmic scale
 let currentScaleType = "linear"; // can be: "linear" or "log"
 
-// -----------------------------------------------------
-// FUNCTION: renderResults(data)
-// PURPOSE:  Converts SPARQL JSON results into an HTML <table>
-// -----------------------------------------------------
+
+//Converts SPARQL JSON results into an HTML <table>
 function renderResults(data) {
 
   // Extract the list of result rows (bindings).
@@ -68,10 +66,7 @@ function renderResults(data) {
   // Return complete HTML string to be inserted into the page
   return html;
 }
-
-// -----------------------------------------------------
-// FUNCTION: escapeHtml(text)
-// PURPOSE:  Converts unsafe characters (<, >, &, etc.) into safe HTML.
+//  Converts unsafe characters (<, >, &, etc.) into safe HTML.
 //           Prevents broken markup + protects against XSS.
 // -----------------------------------------------------
 function escapeHtml(text) {
@@ -635,7 +630,7 @@ if (btnLinear && btnLog) {
 document.getElementById("viewSelector").addEventListener("change", function () {
     const view = this.value; // "table", "graph", or "chart"
 
-    // DOM references for each view container
+    
     const tableDiv = document.getElementById("tableContainer");
     const graphDiv = document.getElementById("graphContainer");
     const chartDiv = document.getElementById("chartContainer");
