@@ -143,7 +143,10 @@ function escapeHtml(text) {
 
     //  Reset view to TABLE by default
     
-
+    document.getElementById("viewSelector").value = "table";
+    document.getElementById("tableContainer").style.display = "block";
+    document.getElementById("graphContainer").style.display = "none"; // hide graph
+    document.getElementById("chartContainer").style.display = "none";
     } catch (err) { // catch errors during SPARQL request and processing
     console.error('SPARQL error:', err);
     resultsDiv.innerHTML =
