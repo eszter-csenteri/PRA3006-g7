@@ -278,7 +278,8 @@ function escapeHtml(text) {
       .style("font-size", "14px")
       .text(d => d.label);
 
-    // ---------- FORCE SIMULATION (physics engine for the graph) ----------
+    // ---------- FORCE SIMULATION (physics engine for the graph) 
+    // This is from 1 of the d3 library.
     const simulation = d3.forceSimulation(graph.nodes)
       // Links (edges) have a set distance and identify nodes by ID
       .force("link", d3.forceLink(graph.links)
@@ -580,7 +581,7 @@ if (molSelector) {
 }
 
   // Scale Toggle Buttons
-  // ===== SCALE SWITCH BUTTONS (Linear / Log) =====
+  //SCALE SWITCH BUTTONS (Linear / Log)
 
 // Grab the buttons from the DOM
 const btnLinear = document.getElementById("btnLinear");
