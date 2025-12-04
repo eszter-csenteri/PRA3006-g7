@@ -278,7 +278,8 @@ function escapeHtml(text) {
       .style("font-size", "14px")
       .text(d => d.label);
 
-    // ---------- FORCE SIMULATION (physics engine for the graph) ----------
+    // ---------- FORCE SIMULATION (physics engine for the graph) 
+    // This is from 1 of the d3 library examples.
     const simulation = d3.forceSimulation(graph.nodes)
       // Links (edges) have a set distance and identify nodes by ID
       .force("link", d3.forceLink(graph.links)
@@ -441,7 +442,7 @@ function escapeHtml(text) {
       const targetName = row.targetName?.value || row.target?.value || "unknown";
 
       const selRaw = row.Selectivity_vs_best?.value;   // SPARQL string (Ki/KiBest)
-      const kiRaw = row.Ki?.value;
+      const kiRaw = row.Ki?.value; // SPARQL string
       const kiBestRaw = row.KiBest?.value;
 
       // Parse numeric selectivity value
@@ -580,7 +581,7 @@ if (molSelector) {
 }
 
   // Scale Toggle Buttons
-  // ===== SCALE SWITCH BUTTONS (Linear / Log) =====
+  //SCALE SWITCH BUTTONS (Linear / Log)
 
 // Grab the buttons from the DOM
 const btnLinear = document.getElementById("btnLinear");
@@ -637,7 +638,7 @@ document.getElementById("viewSelector").addEventListener("change", function () {
 
     // Only show the chosen one
     if (view === "table") {
-      tableDiv.style.display = "block";
+      tableDiv.style.display = "block"; //shows different things based on selection
       graphDiv.style.display = "none";
       chartDiv.style.display = "none";
 
